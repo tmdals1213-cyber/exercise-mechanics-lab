@@ -1,0 +1,118 @@
+{
+  "study": "Standing long jump under fixed virtual joint torque limits",
+  "model": {
+    "height_cm": 178,
+    "mass_kg": 87,
+    "unactuated_sagittal_root_DOF": 3,
+    "actuated_joint_torques": 11,
+    "policy_outputs": 58,
+    "neural_architecture": [
+      9,
+      64,
+      64,
+      58
+    ]
+  },
+  "minimum_retained_distance_m": 3.0089738484319533,
+  "all_four_stable": true,
+  "uncached_confirmation": true,
+  "global_optimum_established": false,
+  "method": "PPO, followed by numerical refinement of six postcontact posture/timing parameters",
+  "joint_torque_limits_Nm": {
+    "flex_extension": 1327.9409669323736,
+    "shoulder_elv_r": 121.6162109934385,
+    "elbow_flexion_r": 37.2781055470349,
+    "shoulder_elv_l": 121.61789303538951,
+    "elbow_flexion_l": 37.27881023811986,
+    "hip_flexion_r": 654.6801101831106,
+    "knee_angle_r": 493.352071101472,
+    "ankle_angle_r": 467.81349219012395,
+    "hip_flexion_l": 654.6497502936215,
+    "knee_angle_l": 500.0357712679794,
+    "ankle_angle_l": 508.0810423562941
+  },
+  "validation": [
+    {
+      "dt_s": 0.0005,
+      "retained_distance_m": 3.0161106654380587,
+      "stable": true,
+      "dynamics_eligible": true,
+      "late_COM_speed_m_s": 0.041376056488854965,
+      "maximum_root_actuation": 0
+    },
+    {
+      "dt_s": 0.00025,
+      "retained_distance_m": 3.0089738484319533,
+      "stable": true,
+      "dynamics_eligible": true,
+      "late_COM_speed_m_s": 0.03193438579353566,
+      "maximum_root_actuation": 0
+    },
+    {
+      "dt_s": 0.000125,
+      "retained_distance_m": 3.011539775270335,
+      "stable": true,
+      "dynamics_eligible": true,
+      "late_COM_speed_m_s": 0.04457186098677443,
+      "maximum_root_actuation": 0
+    },
+    {
+      "dt_s": 6.25e-05,
+      "retained_distance_m": 3.010723793168788,
+      "stable": true,
+      "dynamics_eligible": true,
+      "late_COM_speed_m_s": 0.05552639784626723,
+      "maximum_root_actuation": 0
+    }
+  ],
+  "search_counts": {
+    "cutoff_finished_at": 1795678164.9412901,
+    "local_parameter_proposals_at_discovery": 80,
+    "local_native_simulations_at_discovery": 315,
+    "total_completed_local_parameter_proposals": 84,
+    "total_completed_local_native_simulations": 339,
+    "PPO_completed_trials": 9258,
+    "PPO_policy_updates": 192,
+    "PPO_trials_at_discovery": 9247,
+    "per_branch": [
+      {
+        "run": "robust_finish_v1",
+        "completed_native_evaluations": 83
+      },
+      {
+        "run": "robust_continuation_v1",
+        "completed_native_evaluations": 38
+      },
+      {
+        "run": "robust_launch_batch_v1",
+        "completed_native_evaluations": 120
+      },
+      {
+        "run": "robust_knee_refine_v1",
+        "completed_native_evaluations": 70
+      },
+      {
+        "run": "robust_postlanding_v1",
+        "completed_native_evaluations": 12
+      },
+      {
+        "run": "robust_landing_feedback_v1",
+        "completed_native_evaluations": 8
+      },
+      {
+        "run": "postcontact_screen_v1",
+        "completed_native_evaluations": 8
+      }
+    ],
+    "count_definition": "Local proposal = unique full parameter dictionary with at least one completed native rollout. Cold repetitions count as native simulations, not new proposals. Includes candidates rejected by an early timestep screen; excludes the independent seed-reproduction audit."
+  },
+  "inverse_tension_balance_error_Nm": 6.821210263296962e-13,
+  "video": {
+    "file": "media/standing-long-jump.mp4",
+    "duration_s": 59.8,
+    "frames": 1794,
+    "fps": 30,
+    "approved_opening_preserved_s": 33
+  },
+  "muscle_force_interpretation": "Conditional inverse allocation, not measured activation or independently validated human muscle force"
+}

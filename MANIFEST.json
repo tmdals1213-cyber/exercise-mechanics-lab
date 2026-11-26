@@ -1,0 +1,66 @@
+{
+  "scope": "Final results, key methods and videos only",
+  "source_branch": "lab-source",
+  "files": [
+    {
+      "path": "CREDITS.md",
+      "bytes": 6486,
+      "sha256": "865d75571571713954d86238b1a6dc6c1cd162ee2660465b69c6cf7a18bcfa9e"
+    },
+    {
+      "path": "media/box-jump-vs-squat.mp4",
+      "bytes": 2090464,
+      "sha256": "f36870b18ceedd2a2c9e9e6f522777abedf503da8386d26013b863d39fc8cddf"
+    },
+    {
+      "path": "media/box-jump-vs-squat.png",
+      "bytes": 252794,
+      "sha256": "14feabab46a4353d6936355544e65d1258493d8240ce5b8153137365de7ae733"
+    },
+    {
+      "path": "media/jump-vs-100kg-squat.mp4",
+      "bytes": 3208790,
+      "sha256": "f994ca0756128a313b3cd003c23cbd9a6c96e431a94c172f279a951d25051b5a"
+    },
+    {
+      "path": "media/jump-vs-100kg-squat.png",
+      "bytes": 356355,
+      "sha256": "1d08672ef82719c11cd0172550ded3983e0e94fe83a0d778846854648fb90de8"
+    },
+    {
+      "path": "media/standing-long-jump.mp4",
+      "bytes": 7117426,
+      "sha256": "2310d70461a82be4168a7bbef051f960b5d793a891326951cdb3f183bf2dc87a"
+    },
+    {
+      "path": "media/standing-long-jump.png",
+      "bytes": 114189,
+      "sha256": "14b6d02844d192a0d652965e7a246220ed9f05744789cbdcfd9bda5ac3cdd8ad"
+    },
+    {
+      "path": "METHOD.md",
+      "bytes": 2567,
+      "sha256": "14e93451bcdd253665596eb99cef0590948a2a1bf936457d420f632a388e7180"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2120,
+      "sha256": "f5edd2f3db8dd9f2eb1aea5e9f2ee7139e1cfdae48cfee30e1b433753590556a"
+    },
+    {
+      "path": "results/box-jump-vs-squat.json",
+      "bytes": 55104,
+      "sha256": "f8217f9b9bbaef088ab51a3af96533e3af8a1416dc1125a03db7b97aebec896e"
+    },
+    {
+      "path": "results/jump-vs-100kg-squat.json",
+      "bytes": 53413,
+      "sha256": "312b652bc4747c5bcf00249b1b5bf204c77d9e6d2f08d42d1713d8fccf547cb3"
+    },
+    {
+      "path": "results/standing-long-jump.json",
+      "bytes": 3826,
+      "sha256": "0a453ada068bf73e608f52b11c7ac6660d9d85490964625f8889b820488ca603"
+    }
+  ]
+}
