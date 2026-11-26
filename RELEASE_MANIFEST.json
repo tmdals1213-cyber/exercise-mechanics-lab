@@ -1,5 +1,5 @@
 {
-  "prepared_at": 1795680307.8976023,
+  "prepared_at": 1795682786.296529,
   "credential_scan_passed": true,
   "syntax_check_passed": true,
   "publication_target": "https://github.com/tmdals1213-cyber/exercise-mechanics-lab",
@@ -783,8 +783,8 @@
     },
     {
       "path": "scripts/compose_jump_rl_draft_v5.py",
-      "bytes": 6572,
-      "sha256": "7253aef44ce5f08ee0891daaffb0c247adfb35f70517c895345c903b8996eddb"
+      "bytes": 7498,
+      "sha256": "99c0ec1b32534279a9e7f9e47b8b068c62df9ada7843739f7e2153a5101bb728"
     },
     {
       "path": "scripts/compose_multiview_video.py",
@@ -995,6 +995,11 @@
       "path": "scripts/finish_display_grip_build.py",
       "bytes": 2092,
       "sha256": "ed5c0f00a5d6548e8ff8964fe38610037fea9444128e8d1df276943304c35ed7"
+    },
+    {
+      "path": "scripts/finish_jump_minute_video.py",
+      "bytes": 3370,
+      "sha256": "5d7a27c795e2601fbc79fdfae932fdc950e4d84343fc526530b59f2f16867efb"
     },
     {
       "path": "scripts/fit_athletic_box_contact.py",
@@ -2428,8 +2433,8 @@
     },
     {
       "path": "examples/long_jump/delivery_check.json",
-      "bytes": 807,
-      "sha256": "e701e55746a1c38cdcda04fb85278f916cc77b838fb8934109c225b4926b8f06"
+      "bytes": 1054,
+      "sha256": "f2feac873d9f296dad0a12ed575b937ef601bbd0a33a8f057dd8a122aac44497"
     },
     {
       "path": "examples/long_jump/final_validation.json",
@@ -2449,7 +2454,7 @@
     {
       "path": "examples/long_jump/latest_checked_snapshot.json",
       "bytes": 3560,
-      "sha256": "2c89609c000113b84642d13b186bdb64f362e2690469eed6ce15c0f9a16fb112"
+      "sha256": "c9c78a5a927d620010e77dc3a727a6a2868aee6862e5a8a764f2f4220e0f66c5"
     },
     {
       "path": "examples/long_jump/learning_definition.json",
@@ -2493,8 +2498,8 @@
     },
     {
       "path": "examples/long_jump/standing_long_jump_rl_final.mp4",
-      "bytes": 7659133,
-      "sha256": "3edcfefaee4835c42800f28fc125244896ff8c7e46df87a2c7babeb90539b4b5"
+      "bytes": 7117426,
+      "sha256": "2310d70461a82be4168a7bbef051f960b5d793a891326951cdb3f183bf2dc87a"
     },
     {
       "path": "examples/long_jump/trial_provenance.json",

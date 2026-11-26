@@ -50,13 +50,20 @@ class Draft:
         assert np.all(np.asarray(im)[1536:]==BG),'Footer overwritten';return im
 
 def main():
-    ap=argparse.ArgumentParser();ap.add_argument('--layout-preview',action='store_true');ap.add_argument('--preview',action='store_true');args=ap.parse_args();draft=Draft(args.layout_preview)
+    ap=argparse.ArgumentParser();ap.add_argument('--layout-preview',action='store_true');ap.add_argument('--preview',action='store_true');ap.add_argument('--duration',type=float,default=59.8,help='Presentation duration; first33s remain at their approved timing.');ap.add_argument('--output');args=ap.parse_args();draft=Draft(args.layout_preview)
     side=next(s for s in draft.segments if s['kind']=='side_four');draft.at(side['start_s']+6.2).save(OUT/'preview_four_side.png');draft.at(draft.duration-3.5).save(OUT/'preview_four_oblique.png')
     if args.preview or args.layout_preview:return
-    video=OUT/'standing_long_jump_rl_final.mp4';writer=imageio_ffmpeg.write_frames(str(video),(1080,1920),fps=30,codec='libx264',pix_fmt_in='rgb24',pix_fmt_out='yuv420p',macro_block_size=1,output_params=['-crf','18','-preset','medium','-threads','4','-movflags','+faststart']);writer.send(None);count=round(draft.duration*30)
+    count=round(args.duration*30);duration=count/30;assert duration>33.;speed=(draft.duration-33.)/(duration-33.);video=Path(args.output)if args.output else OUT/'standing_long_jump_rl_final.mp4';video.parent.mkdir(parents=True,exist_ok=True)
+    timeline=read(OUT/'timeline_v5.json');timeline['source_duration_s']=draft.duration;timeline['duration_s']=duration;timeline['presentation_speed_after_33s']=speed
+    for segment in timeline['segments']:
+        for field in ['start_s','end_s']:
+            if segment[field]>33.:segment[field]=33.+(segment[field]-33.)/speed
+    atomic(OUT/'timeline_v5.json',timeline)
+    writer=imageio_ffmpeg.write_frames(str(video),(1080,1920),fps=30,codec='libx264',pix_fmt_in='rgb24',pix_fmt_out='yuv420p',macro_block_size=1,output_params=['-crf','18','-preset','medium','-threads','4','-movflags','+faststart']);writer.send(None)
     try:
-        for i in range(count):writer.send(np.asarray(draft.at(i/30)))
+        for i in range(count):
+            t=i/30;source_t=t if t<33. else 33.+(t-33.)*speed;writer.send(np.asarray(draft.at(min(source_t,draft.duration-1e-6))))
     finally:writer.close()
-    atomic(OUT/'draft_delivery.json',dict(video=str(video),frames=count,fps=30,duration_s=count/30,preserved_prefix_s=33,side_four_simultaneous=True,oblique_four_simultaneous=True,phase_aligned=True,stable_three_metre_complete=draft.complete,trial_provenance=draft.provenance));print('V5_VIDEO_READY',str(video),flush=True)
+    atomic(OUT/'draft_delivery.json',dict(video=str(video),frames=count,fps=30,duration_s=duration,source_duration_s=draft.duration,presentation_speed_after_33s=speed,presentation_timing_only=True,physical_simulation_unchanged=True,preserved_prefix_s=33,side_four_simultaneous=True,oblique_four_simultaneous=True,phase_aligned=True,stable_three_metre_complete=draft.complete,trial_provenance=draft.provenance));print('V5_VIDEO_READY',str(video),flush=True)
 
 if __name__=='__main__':main()
