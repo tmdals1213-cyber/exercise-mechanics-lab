@@ -1,0 +1,165 @@
+{
+  "schema": "exercise-mechanics.muscle-prediction-assumptions/1.1",
+  "intended_claim": "One declared standard-model muscle-tendon tension solution for prescribed movement and external loading",
+  "current_jump_is_muscle_driven_forward_simulation": false,
+  "current_jump_has_released_muscle_force_solution": false,
+  "personal_strength_ceiling_enforced": false,
+  "items": [
+    {
+      "factor": "Subject and mass distribution",
+      "current": "Generic 180 cm / 90 kg reference with standard segment fractions and muscle parameters. Individual measurements are not required for this project.",
+      "effect": "Single muscle-reference multipliers can be changed while the standard body is held fixed. This is not an individual anatomy reconstruction.",
+      "status": "accepted standard reference",
+      "source": "project"
+    },
+    {
+      "factor": "Bones and joints",
+      "current": "Rigid segments, native joint axes and ROM, coordinate couplers; anatomical muscle and joint connectivity must support the prescribed movement.",
+      "effect": "No deformable bone, explicit cartilage contact, independent ligament mechanics or freely moving native scapula.",
+      "status": "accepted rigid-body scope",
+      "source": "project"
+    },
+    {
+      "factor": "Muscle paths and moment arms",
+      "current": "416 force elements with attachment/via/wrapping paths; visual mesh count and shape are separate. Thirty derivative checks across six independent coordinates and 416 elements pass in the current converted model.",
+      "effect": "Force elements are not 416 independent anatomical whole muscles. Geometry and moment arms must be checked over each task ROM. Native lower-limb conversion notes report knee moment-arm differences from OpenSim; derivative consistency does not establish anatomical fidelity.",
+      "status": "task audit required",
+      "source": "hicks"
+    },
+    {
+      "factor": "Scapular muscle coverage",
+      "current": "Trapezius, serratus anterior, rhomboids and levator scapulae force paths are missing from the active whole-body backend. Replacement shoulder component remains unintegrated.",
+      "effect": "Scapular work and stabilization cannot be assigned to their actual muscles; coupled shoulder work can be misattributed.",
+      "status": "known blocking gap",
+      "source": "seth"
+    },
+    {
+      "factor": "Active and passive muscle law",
+      "current": "Imported MuJoCo force-length-velocity gain and passive force are evaluated in the jump audit. Current motion dynamics use generalized joint demands.",
+      "effect": "Inherited parameter errors and operating-range issues can invalidate muscle-specific values even when rigid-body balance passes.",
+      "status": "available and audited; not a released jump force solution",
+      "source": "mujoco"
+    },
+    {
+      "factor": "Tendon and pennation",
+      "current": "Inelastic tendon and zero pennation in the current backend. Tendon elasticity is an optional extension, not a prerequisite for the first tension reference.",
+      "effect": "No independent tendon recoil prediction; this simplification is accepted for the current tension-only model.",
+      "status": "accepted first-version simplification",
+      "source": "mujoco"
+    },
+    {
+      "factor": "Reference force and strength",
+      "current": "Library reference forces normalize force sharing. Demand effort e >= 0 has no hard upper bound.",
+      "effect": "Computed demand is not bounded neural activation, firing rate, measured maximum strength, or a prediction that a person can complete the movement.",
+      "status": "user-requested unbounded demand",
+      "source": "project"
+    },
+    {
+      "factor": "Muscle sharing",
+      "current": "A joint task-independent solver selects a temporally continuous reference-normalized tension history with a magnitude regularizer. Physiological minimum effort or metabolic energy is deferred.",
+      "effect": "Magnitude and continuity regularization choose one mathematical history. They do not claim that the nervous system minimizes this objective.",
+      "status": "implemented numerical selection rule",
+      "source": "opensim_so"
+    },
+    {
+      "factor": "Antagonists and joint stability",
+      "current": "Active and passive tension enter equilibrium. The new reference solver can enforce the existing generic GH reaction-direction cone. No arbitrary muscle-specific antagonist force floor is inserted.",
+      "effect": "Stability constraints can require additional muscles to carry tension. The GH cone must not be treated as a universal knee/ankle stability model.",
+      "status": "implemented GH approximation; other joint stability rules not supplied",
+      "source": "project"
+    },
+    {
+      "factor": "Neural control and fatigue",
+      "current": "No firing-rate, activation-history, fiber-type recruitment, fatigue or potentiation model. These are outside the requested scope.",
+      "effect": "No claim about neural activation or fatigue is needed for the requested mechanical tension comparison.",
+      "status": "out of scope",
+      "source": "project"
+    },
+    {
+      "factor": "External environment and contact",
+      "current": "Gravity 9.80665 m/s\u00b2; no air drag; ideal unilateral flat contact; assumed friction coefficient 0.8. Baseline GRF and landing-duration profiles are inputs.",
+      "effect": "Landing peak, jump performance and shoe/floor deformation are not independently predicted. Force-plate profiles are not measured.",
+      "status": "prescribed reference conditions",
+      "source": "project"
+    },
+    {
+      "factor": "Movement and numerical consistency",
+      "current": "Generated posture targets and contact phases. Vertical reference passes numerical checks at 2400 Hz; large internal transients remain. Long-jump recovery is incomplete.",
+      "effect": "Force balance and convergence do not establish natural human movement or empirical muscle-force accuracy.",
+      "status": "motion realism not validated",
+      "source": "hicks"
+    },
+    {
+      "factor": "Morphology changes",
+      "current": "Physical segment similarity scaling changes length, width/depth, inertia and attachment geometry together. Mass and reference force are separate controls.",
+      "effect": "Independent length-only, width and muscle-size/architecture adjustment is not yet implemented. A new body needs refitted motion, contact and muscle-range checks.",
+      "status": "independent controls pending",
+      "source": "project"
+    },
+    {
+      "factor": "Meaning of output",
+      "current": "Primary output is muscle-tendon tension in N, with active/passive components. Other mechanical quantities are retained only for checks and constraints.",
+      "effect": "They do not directly provide local tissue stress, cartilage pressure, hypertrophy volume, fatigue or microdamage. A normalized tension ratio is not percentage activation.",
+      "status": "tension-only scope",
+      "source": "project"
+    },
+    {
+      "factor": "Validation and uncertainty",
+      "current": "Required checks concern mechanical consistency, path/parameter validity, task continuity and declared force allocation. Empirical and individual calibration remain optional additional confidence, not prerequisites imposed on this generic-model project.",
+      "effect": "A declared mechanical reference solution is the deliverable. Comparisons must retain consistent assumptions and resolve actual geometry or motion defects.",
+      "status": "project-specific mechanical acceptance",
+      "source": "hicks"
+    }
+  ],
+  "sources": {
+    "mujoco": {
+      "title": "MuJoCo muscle modeling",
+      "url": "https://mujoco.readthedocs.io/en/stable/modeling.html#muscles"
+    },
+    "opensim_so": {
+      "title": "OpenSim static optimization",
+      "url": "https://opensimconfluence.atlassian.net/wiki/spaces/OpenSim/pages/53089619/How%2BStatic%2BOptimization%2BWorks"
+    },
+    "seth": {
+      "title": "Seth et al. 2019 \u2014 shoulder muscle contributions",
+      "url": "https://doi.org/10.3389/fnbot.2019.00090"
+    },
+    "hicks": {
+      "title": "Hicks et al. 2015 \u2014 verification and validation",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4321112/"
+    },
+    "myoleg": {
+      "title": "MyoLeg conversion fidelity notes",
+      "url": "https://github.com/MyoHub/myo_sim/blob/main/myo_sim/models/leg/README.md"
+    }
+  },
+  "agreed_scope": {
+    "required": [
+      "rigid segment kinematics and consistent contacts",
+      "muscle attachment paths and force-length-velocity/passive laws",
+      "explicit joint stability assumptions",
+      "one reproducible tension allocation",
+      "no hard personal strength ceiling"
+    ],
+    "accepted_simplifications": [
+      "generic standard anthropometry and muscle parameters",
+      "rigid bones and idealized joints",
+      "rigid tendon for the first tension solution",
+      "assumed gravity/friction environment"
+    ],
+    "optional_or_later": [
+      "compliant tendon",
+      "independent length/breadth/muscle-size controls",
+      "physiological minimum-effort or minimum-metabolic-energy criterion"
+    ],
+    "out_of_scope": [
+      "individual anatomical measurement or personal force prediction",
+      "neural firing, fiber-type recruitment and fatigue",
+      "bone, capsule or ligament deformation",
+      "local stress, injury or tissue damage"
+    ],
+    "individual_calibration_required_for_current_goal": false
+  },
+  "conditional_tension_solver": "scripts/tension_reference.py",
+  "reference_configuration": "scenarios/tension_reference.json"
+}

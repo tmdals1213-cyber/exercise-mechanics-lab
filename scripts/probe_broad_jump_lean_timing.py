@@ -1,0 +1,10 @@
+import json,numpy as np
+from controlled_broad_jump import ROOT,DEFAULT,build,run
+
+def main():
+ out=ROOT/'results/controlled_broad_jump/lean_timing_diagnosis_v6';out.mkdir(parents=True,exist_ok=True);source=ROOT/'results/controlled_broad_jump/ground_control_diagnosis_v2/candidate_02/control_summary.json';base=DEFAULT.copy();base.update(json.loads(source.read_text())['parameters']);base.update(pitch_gain=500.,seconds=3.0);prepared=build(.001);rows=[]
+ variants=[dict(prepush_lean_s=h,ankle_bottom=a,lean_m=.6,push_s=.26)for a in [.5,.75]for h in [0.,.1,.2,.3]]
+ for i,change in enumerate(variants):
+  p=base.copy();p.update(change);rep,z=run(p,out/f'candidate_{i:02d}',dt=.001,prepared=prepared);vel=rep.get('takeoff_velocity_m_s',[0,0,0]);H=rep.get('takeoff_H_kg_m2_s',[100])[0];vx=-vel[1];vz=vel[2];cost=(vx-2.9)**2+((vz-2)/.8)**2+.002*H**2+(30 if rep['takeoff_s']is None or rep['fell']else 0);row=dict(candidate=i,cost=cost,vx=vx,vz=vz,Hx=H,peak_BW=rep['peak_GRF_BW'],COM=rep.get('takeoff_COM_m'),parameters=change);rows.append(row);(out/'search.json').write_text(json.dumps(rows,indent=2));print('LEAN_TIMING',i,round(cost,3),'v',round(vx,2),round(vz,2),'H',round(H,1),'F',round(rep['peak_GRF_BW'],1),flush=True)
+ (out/'summary.json').write_text(json.dumps(sorted(rows,key=lambda r:r['cost']),indent=2))
+if __name__=='__main__':main()

@@ -1,0 +1,71 @@
+"""Report verification gates without conflating them with human accuracy."""
+import json,html,numpy as np
+from pathlib import Path
+from PIL import Image,ImageDraw,ImageFont
+from jump_rig import ROOT
+OUT=ROOT/'results/mechanics_foundation'
+
+def main():
+    core=json.loads((OUT/'verification.json').read_text('utf-8'));refs={};planar=json.loads((OUT/'planar_calibration.json').read_text('utf-8')) if (OUT/'planar_calibration.json').exists() else None
+    for hz in [600,1200,2400]:
+        f=OUT/f'rigid_reference_{hz}hz'
+        if (f/'verification.json').exists():refs[hz]=(json.loads((f/'verification.json').read_text('utf-8')),dict(np.load(f/'joint_loads.npz')))
+    convergence={};threshold=.02
+    for coarse,fine in zip(sorted(refs),sorted(refs)[1:]):
+        cr=refs[coarse][1];fr=refs[fine][1];names=json.loads((OUT/f'rigid_reference_{fine}hz/setup.json').read_text('utf-8'))['coordinate_names'][6:];rows=[]
+        for label,prefix in [('Ankle',('ankle_',)),('Knee',('knee_',)),('Hip',('hip_',)),('Shoulder',('shoulder_','elv_angle'))]:
+            ix=[i for i,n in enumerate(names) if n.startswith(prefix)];f=np.c_[[np.interp(cr['times'],fr['times'],fr['joint_moments_Nm'][:,i]) for i in ix]].T;c=cr['joint_moments_Nm'][:,ix];pr=float(abs(f).max());pc=float(abs(c).max());rms=float(np.sqrt(np.mean((c-f)**2))/max(1,np.sqrt(np.mean(f*f))));pd=abs(pc-pr)/max(1,pr);rows.append({'joint_group':label,'coarse_peak_abs_Nm':pc,'fine_peak_abs_Nm':pr,'relative_peak_difference':pd,'relative_curve_RMS_difference':rms,'passes_declared_2_percent_target':bool(max(pd,rms)<=threshold)})
+        convergence[f'{coarse}_to_{fine}']={'target_is_engineering_choice_not_human_accuracy':True,'target':threshold,'rows':rows,'all_passed':all(r['passes_declared_2_percent_target'] for r in rows)}
+    latest=refs[max(refs)][0] if refs else None;lastconv=convergence[list(convergence)[-1]] if convergence else None
+    result={'status':'mechanics_verification_foundation','analytical_fixtures_passed':all(t['passed'] for t in core['analytical_tests']),'static_standing':core['static_standing'],'path_velocity_check':core['path_velocity_check'],'inertia_issue':'eight coordinate helper bodies had approximately 1 g mass and 1 kg m2 inertia each','reference_hz_available':sorted(refs),'convergence':convergence,'latest_reference_numerical_gates_passed':bool(latest and all(latest['gates'].values())),'time_resolution_target_passed':bool(lastconv and lastconv['all_passed']),'human_motion_validated':False,'muscle_load_comparison_released':False,'net_joint_reaction_definition':'net intersegmental force/moment, not cartilage contact force','GRF_COP_prediction':'prescribed diagnostic inputs; coupled contact prediction and experimental validation are not established'}
+    (OUT/'dashboard_data.json').write_text(json.dumps(result,indent=2),encoding='utf-8')
+    if latest:draw_comparison(refs)
+    esc=html.escape;row=lambda a,b:f'<tr><td>{esc(str(a))}</td><td>{esc(str(b))}</td></tr>'
+    gates=''.join(row(k,'PASS' if v else 'REJECTED (expected)' if k in ['legacy_profile_inertial_extent_sanity','corrected_profile_old_motion_is_valid'] else 'PENDING / WITHHELD') for k,v in core['gates'].items());static=core['static_standing'];fixture=core['analytic_launch']['resolution'][-1];snap=max(core['snapshots'],key=lambda r:abs(r['legacy']['shoulder_elv_r_net_generalized_Nm']));legacy=snap['legacy'];fix=snap['rigid_profile_fixed_historical_motion'];tests=''.join(row(t['name'],f'{t["max_absolute_error_SI"]:.3g}') for t in core['analytical_tests'])
+    references=''
+    for hz,(rep,_) in refs.items():
+        c=rep['checks'];references+=f'<h3>{hz} Hz / {1000/hz:.3f} ms</h3><table>'+''.join(row(k,f'{v:.6g}') for k,v in c.items())+'</table><p>'+esc(rep['status'])+' · GRF/COP are prescribed diagnostic inputs.</p>'
+    cv=''
+    for pair,item in convergence.items():
+        cv+=f'<h3>{pair.replace("_to_"," → ")} Hz</h3><table><tr><th>Group</th><th>Peak coarse / Nm</th><th>Peak fine / Nm</th><th>Peak difference</th><th>Curve RMS difference</th><th>2% gate</th></tr>'
+        for r in item['rows']:cv+=f'<tr><td>{r["joint_group"]}</td><td>{r["coarse_peak_abs_Nm"]:.2f}</td><td>{r["fine_peak_abs_Nm"]:.2f}</td><td>{100*r["relative_peak_difference"]:.2f}%</td><td>{100*r["relative_curve_RMS_difference"]:.2f}%</td><td>{"PASS" if r["passes_declared_2_percent_target"] else "PENDING"}</td></tr>'
+        cv+='</table>'
+    htmltext='''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mechanics foundation</title><style>:root{color-scheme:dark}body{font:17px system-ui;background:#101c2b;color:#edf3fb;max-width:1180px;margin:32px auto;padding:0 22px;line-height:1.55}h1{font-size:34px}h2{margin-top:40px}table{border-collapse:collapse;width:100%;font-size:14px;display:block;overflow:auto}td,th{padding:10px;text-align:left;border-bottom:1px solid #344b60;white-space:nowrap}th{color:#a8bed1}.card{background:#1c3045;padding:24px;border-radius:12px;margin:22px 0}.warm{border-left:5px solid #edb580}.good{color:#8ce2d5}a{color:#8ce2d5}img{width:100%;display:block}.small{font-size:14px;color:#b5c7d8}</style>
+    <h1>Mechanics foundation</h1><p>External loads → independent segment free bodies → net joint loads → muscle models after verification.</p>
+    <div class="card warm"><strong>Human movement and muscle-load comparison remain unvalidated.</strong><p>Numerical agreement confirms the mechanics implementation, not anatomical parameter accuracy or human recruitment. The existing colored-muscle movie remains a rejected development artifact.</p></div>
+    <div class="card"><strong>Confirmed legacy inertial defect</strong><p>Eight coordinate-helper bodies had about 1 gram of mass but about 1 kg m² rotational inertia each: a radius of gyration near 32 metres.</p><p>At the legacy peak, shoulder generalized demand was LEGACY Nm, of which HELPER Nm came from those helpers. With corrected inertias on the same historical motion it becomes FIXED Nm; that motion then fails global moment balance, so it must be regenerated.</p></div>
+    <h2>What is now checked</h2><p>Closed-form static levers, a two-link chain, dynamic pendulum, free fall, a declared single-agonist calibration, static bodyweight/COP balance, impulse–momentum, work–energy, independent Newton–Euler assembly, recursive joint cuts and time-resolution sensitivity.</p><table>GATES</table>
+    <h2>Standing support calibration</h2><p>90 kg × 9.80665 m/s² = EXPECTED N. Calculated support: ACTUAL N. COP is placed at the physical COM projection and distributed with nonnegative normal forces. Root force/moment residuals: FORCE N / MOMENT Nm.</p>
+    <h2>Analytical fixtures</h2><table><tr><th>Closed-form case</th><th>Maximum absolute SI error</th></tr>TESTS</table><p>Independent wrench vs engine: ENGINECHECK maximum SI component. Recursive cuts vs virtual work: CUTCHECK. These floating-point errors are not claims of human measurement accuracy.</p>
+    <img src="foundation_summary.png"><p class="small">Point-mass fixture only. Finest-grid impulse error: IMPULSE Ns; work–energy error: ENERGY J.</p>
+    <h2>Regenerated rigid-body reference</h2><p>Helpers are point-like numerical frames; total mass stays 90 kg. Uncalibrated joint resistance is omitted. This new motion is generated under the corrected model. GRF and COP remain declared inputs, so human predictive validity is pending.</p>COMPARISON
+    <h2>Resolution check</h2><p>Both full-curve RMS difference and peak difference must be within a declared 2% numerical target. This is an engineering target, not a biological accuracy standard.</p>CONVERGENCE
+    <h2>Independent checks on each reference</h2>REFERENCES
+    <h2>Muscle-velocity issue found</h2><p>Actuation-disabled mj_forward zeroed native actuator_velocity. New calculations use the transmission Jacobian times velocity and are checked against finite differences of actual path length. Maximum discrepancy: SPEEDERROR m/s. Muscle forces remain withheld.</p>
+    <h2>Meaning of joint loads</h2><p>These are net intersegmental forces and moments. Articular/cartilage contact forces require a separately validated muscle/passive-force model. No muscle activation percentage, fatigue or tissue damage is inferred.</p>
+    <p><a href="verification.json">Core verification</a> · <a href="dashboard_data.json">Dashboard data</a> · <a href="joint_load_snapshots.csv">Joint-cut audit</a> · <a href="../tension_visualization/index.html">Legacy renderer / diagnostic only</a></p></html>'''
+    values={'LEGACY':f'{legacy["shoulder_elv_r_net_generalized_Nm"]:.1f}','HELPER':f'{legacy["coordinate_helper_contribution_to_shoulder_elv_r_Nm"]:.1f}','FIXED':f'{fix["shoulder_elv_r_net_generalized_Nm"]:.1f}','GATES':gates,'EXPECTED':f'{static["expected_vertical_support_N"]:.4f}','ACTUAL':f'{static["calculated_vertical_support_N"]:.4f}','FORCE':f'{static["root_force_residual_N"]:.3g}','MOMENT':f'{static["root_moment_residual_Nm"]:.3g}','TESTS':tests,'ENGINECHECK':f'{core["engine_crosscheck_max_SI"]:.3g}','CUTCHECK':f'{core["recursive_cut_crosscheck_max_SI"]:.3g}','IMPULSE':f'{fixture["impulse_momentum_error_Ns"]:.6g}','ENERGY':f'{fixture["work_energy_error_J"]:.6g}','COMPARISON':'<img src="rigid_comparison.png">' if latest else '<p>Pending regeneration.</p>','CONVERGENCE':cv or '<p>Waiting for the second resolution.</p>','REFERENCES':references,'SPEEDERROR':f'{core["path_velocity_check"]["Jacobian_vs_length_finite_difference_max_error_m_s"]:.3g}'}
+    for k,v in values.items():htmltext=htmltext.replace(k,v)
+    if lastconv and not lastconv['all_passed']:
+        failed='; '.join(f'{r["joint_group"]}: {100*r["relative_curve_RMS_difference"]:.2f}% curve RMS difference' for r in lastconv['rows'] if not r['passes_declared_2_percent_target'])
+        htmltext=htmltext.replace('<h2>Regenerated rigid-body reference</h2>','<div class="card warm"><strong>Full jump not accepted for load comparison</strong><p>The latest resolution gate is not met: '+failed+'. Local force/moment residuals alone are insufficient.</p></div><h2>Regenerated rigid-body reference</h2>')
+    if planar:
+        p=planar['resolution'][-1];result['reduced_calibration_gates_passed']=all(planar['gates'].values());result['reduced_calibration_is_human_validation']=False
+        section=f'<h2>First movement calibration: shallow symmetric squat</h2><p>Reduced planar rigid segments; no shoulder optimizer or individual muscle allocation. Ground force and COP are solved from segment Newton–Euler balance, then checked for unilateral contact, support and friction. Population leg parameters are transcribed from <a href="https://raw.githubusercontent.com/freemocap/freemocap/main/freemocap/core/kinematics/inertial/anthropometry.py">FreeMoCap\'s implementation of de Leva</a>; geometry and the lumped upper body are explicit assumptions.</p><p><strong>{planar["status"]}</strong> · work–energy error per half-cycle {p["work_energy_error_each_half_J"]:.6g} J; relative energy-rate RMS error {100*p["energy_derivative_relative_RMS_error"]:.6g}%; root balance residual {p["root_wrench_component_residual_max_SI"]:.3g}. This verifies the declared mechanics model, not an individual\'s squat loads.</p><img src="planar_calibration.png"><p><a href="planar_calibration.json">Assumptions, checks and COM sensitivity</a> · <a href="planar_calibration.csv">Time series</a></p>'
+        htmltext=htmltext.replace('<h2>Regenerated rigid-body reference</h2>',section+'<h2>Regenerated rigid-body reference</h2>');(OUT/'dashboard_data.json').write_text(json.dumps(result,indent=2),encoding='utf-8')
+    (OUT/'index.html').write_text(htmltext,encoding='utf-8');print(json.dumps({k:result[k] for k in ['reference_hz_available','latest_reference_numerical_gates_passed','time_resolution_target_passed','human_motion_validated','muscle_load_comparison_released']}))
+
+def draw_comparison(refs):
+    hz=max(refs);new=refs[hz][1];old=np.load(ROOT/'results/jump_validation/vertical/acceleration_2400hz/loads.npz');names=json.loads((OUT/f'rigid_reference_{hz}hz/setup.json').read_text('utf-8'))['coordinate_names'][6:];right=lambda n:names.index(n)
+    im=Image.new('RGB',(1500,1140),'#101c2b');dr=ImageDraw.Draw(im);font=lambda n:ImageFont.truetype('C:/Windows/Fonts/arial.ttf',n);dr.text((70,28),'REGENERATED RIGID REFERENCE / CONDITIONAL LOADS',font=font(32),fill='#edf3fb');dr.text((70,78),'Numerically checked. Prescribed GRF/COP; human motion not validated.',font=font(24),fill='#edb580')
+    panels=[('Vertical ground force / N',[('New reference',new['times'],new['contact_forces_N'].sum(1)[:,2],'#8ce2d5')]),('Right lower-limb net generalized moments / Nm',[(n,new['times'],new['joint_moments_Nm'][:,right(k)],c) for n,k,c in [('Hip','hip_flexion_r','#8ce2d5'),('Knee','knee_angle_r','#84bdf4'),('Ankle','ankle_angle_r','#c5b5ff')]]),('Shoulder elevation demand / Nm',[('Legacy',old['times'],old['net_joint_moment_Nm'][:,right('shoulder_elv_r')],'#edb580'),('Regenerated',new['times'],new['joint_moments_Nm'][:,right('shoulder_elv_r')],'#8ce2d5')])]
+    for k,(title,series) in enumerate(panels):
+        x0,x1=145,1430;y0=200+k*280;y1=y0+175;vals=np.concatenate([v for _,_,v,_ in series]);lo=min(0,float(vals.min()));hi=max(1,float(vals.max()));pad=.06*(hi-lo);lo-=pad;hi+=pad;X=lambda t:x0+(x1-x0)*t/2.75;Y=lambda v:y1-(y1-y0)*(v-lo)/(hi-lo);dr.text((70,y0-48),title,font=font(25),fill='#edf3fb')
+        for v in np.unique([lo,0,hi]):dr.line((x0,Y(v),x1,Y(v)),fill='#344b60');dr.text((x0-15,Y(v)),f'{v:.0f}',font=font(21),fill='#b5c7d8',anchor='rm')
+        for label,t,y,c in series:
+            ids=np.unique(np.r_[np.arange(0,len(t),max(1,len(t)//1500)),int(np.argmax(y)),int(np.argmin(y))]);dr.line([(X(float(t[i])),Y(float(y[i]))) for i in ids],fill=c,width=2)
+        pos=910
+        for label,_,_,c in series:dr.text((pos,y0-40),label,font=font(21),fill=c);pos+=170
+        for t in [0,.5,1,1.5,2,2.5]:dr.text((X(t),y1+12),f'{t:.1f}s',font=font(21),fill='#b5c7d8',anchor='mt')
+    dr.text((70,1060),'Comparison includes regenerated motion and corrected profile; it is not an isolated one-parameter change.',font=font(22),fill='#b5c7d8');im.save(OUT/'rigid_comparison.png')
+if __name__=='__main__':main()

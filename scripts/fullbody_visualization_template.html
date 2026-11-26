@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Full-body jump · muscle tension</title>
+<style>
+:root{color-scheme:dark;font:16px system-ui;background:#0d1726;color:#edf3fb}*{box-sizing:border-box}body{margin:0;padding:24px}main{display:flex;justify-content:center;align-items:flex-start;gap:24px}.stage{width:540px;max-width:100%}canvas{width:100%;display:block}.controls{width:380px;max-width:100%;padding:24px;background:#172538;border:1px solid #31475c;border-radius:14px}h1{font-size:23px;margin:0 0 12px}p{line-height:1.5;color:#a8bed1}.row{display:flex;gap:12px;margin:16px 0}.row>div{flex:1;min-width:0}label{display:block;font-size:13px;color:#a8bed1;margin-bottom:6px}select,button,input{width:100%;font:inherit}select,button{border:1px solid #465e76;background:#20344b;color:#edf3fb;padding:10px;border-radius:7px}button{cursor:pointer}input[type=range]{accent-color:#8ce2d5}details{color:#a8bed1;font-size:14px;line-height:1.5}.note{padding:14px;background:#253246;border-radius:8px;font-size:14px;margin:18px 0}.note p{margin:8px 0 0}a{color:#8ce2d5}.links{display:flex;gap:14px;flex-wrap:wrap;margin-top:18px}.status{font-size:13px}.portrait-only{padding:0;width:1080px}.portrait-only main{display:block}.portrait-only .controls{display:none}.portrait-only .stage{width:1080px;max-width:none}@media(max-width:900px){body{padding:12px}main{flex-direction:column;align-items:center}.controls{width:540px}} 
+</style>
+<main><section class="stage"><canvas id="stage" width="1080" height="1920" aria-label="Full-body anatomy with muscle tension, foot contact force and synchronized whole-body timeline"></canvas></section>
+<section class="controls"><h1>Whole-body jump lab</h1><p>One pose and force solution, two display surfaces. Select a muscle for a detailed tension graph.</p>
+<div class="row"><div><label for="display">Display</label><select id="display"><option value="anatomy">Muscle anatomy</option><option value="humanoid">Smooth humanoid</option></select></div><div><label for="chart">Timeline</label><select id="chart"><option value="overview">Whole body</option><option value="detail">Selected muscle</option></select></div></div>
+<div class="row"><div><label for="group">Muscle group</label><select id="group"></select></div><div><label for="side">Side</label><select id="side"><option value="both">Both</option><option value="r">Right</option><option value="l">Left</option></select></div></div>
+<label for="profile">Reference-force parameter</label><select id="profile"><option value="standard">Standard</option><option value="quadriceps_plus_10_percent">Quadriceps +10%</option><option value="right_soleus_plus_10_percent">Right soleus +10%</option></select>
+<div class="row"><div><button id="play">Play</button></div><div><label for="time">Time <span id="time-label">0.00 s</span></label><input id="time" type="range" min="0" max="82" value="0"></div></div><p id="selected" aria-live="polite"></p><p id="loading" class="status">Loading frames…</p>
+<div class="note"><strong>Human load comparison rejected</strong><p>The current motion and shoulder/force-selection assumptions produce severely inflated upper-body tensions. Numerical balance passed, but human movement and muscle-load interpretation did not. <a href="interpretation_audit.png">View the diagnostic</a> / <a href="interpretation_audit.json">audit data</a>.</p><p>416 native muscle elements, 50 group/side records. The foot has ankle and extrinsic toe muscles, but no intrinsic plantar-muscle actuators. Cyan arrows show external ground reaction, not plantar-muscle tension. Neutral regions are unmapped or under review.</p><p>The prescribed jump retains excessive motion transients. Its tensions are a model reference, not validated human recruitment.</p></div>
+<details><summary>Model and display</summary><ul><li>All colored anatomy and both surfaces use the same absolute-N logarithmic color scale.</li><li>Group values sum modeled muscle–tendon tensions. Whole-body rows may combine related groups; they are not activation percentages.</li><li>Foot intrinsics, trapezius, serratus, rhomboids and levator scapulae lack integrated force paths. Latissimus parameters remain under review.</li><li>Humanoid colors are an illustrative surface projection; skin stress is not calculated.</li><li>Reference parameters can change force sharing. No personal strength ceiling is imposed.</li><li>Repeats replay one reference motion; they do not simulate fatigue or new trials.</li></ul></details>
+<div class="links"><a href="../tension_reference/method.html">Method</a><a href="../jump_validation/muscle_assumptions.html">Assumptions</a><a href="coverage_checks.json">Coverage</a><a href="neutral_pose_card.png">Standing reference</a></div><p class="status">1080 × 1920 · bottom 384 px reserved</p></section></main>
+<script src="data.js"></script><script src="masks.js"></script><script>
+(()=>{
+const d=window.TENSION_DATA,packed=window.TENSION_MASKS,$=id=>document.getElementById(id),canvas=$('stage'),ctx=canvas.getContext('2d');
+const heat=document.createElement('canvas'),soft=document.createElement('canvas');for(const c of [heat,soft]){c.width=1080;c.height=900}const hx=heat.getContext('2d'),sx=soft.getContext('2d'),pixels=hx.createImageData(1080,900);
+const images={anatomy:[],humanoid:[]},cache=new Map(),pending=new Map(),B={x:54,y:182,w:972,h:810};
+const theme={bg:'#0d1726',fg:'#edf3fb',muted:'#a8bed1',line:'#31475c',cyan:'#8ce2d5',orange:'#eeb988'};
+let current=0,group='quadriceps',side='both',profile='standard',display='anatomy',chart='overview',playing=false,start=0,version=0;
+const stops=[0,100,1000,10000,100000],colors=[[42,96,135],[51,162,172],[93,196,126],[246,181,78],[235,82,70]],logs=stops.map(Math.log1p);
+function rgb(F){const v=Math.log1p(Math.max(0,F));let k=0;while(k<logs.length-2&&v>logs[k+1])k++;const u=Math.min(1,Math.max(0,(v-logs[k])/(logs[k+1]-logs[k])));return colors[k].map((x,j)=>Math.round(x+(colors[k+1][j]-x)*u))}
+const hex=c=>'rgb('+c.join(',')+')',num=v=>Math.round(v).toLocaleString('en-US');
+function text(t,x,y,size=28,color=theme.fg,align='left'){ctx.fillStyle=color;ctx.font=`${size}px system-ui`;ctx.textAlign=align;ctx.fillText(t,x,y);ctx.textAlign='left'}
+function line(a,b,color,width=2){ctx.strokeStyle=color;ctx.lineWidth=width;ctx.beginPath();ctx.moveTo(...a);ctx.lineTo(...b);ctx.stroke()}
+function phase(t){if(t<.25)return 'READY';if(t<.6)return 'COUNTERMOVEMENT';if(t<.85)return 'BRAKING';if(t<d.takeoff_s)return 'PROPULSION';if(t<d.landing_s)return 'FLIGHT';if(t<d.landing_s+.11)return 'LANDING';return 'RECOVERY'}
+function sumSeries(keys,type='total'){
+ const ids=d.groups.map((g,i)=>({g,i})).filter(({g})=>keys.includes(g.key)&&(side==='both'||g.side===side));
+ if(!ids.length||ids.some(({i})=>!d.profiles[profile][type][i]))return null;
+ return d.times.map((_,f)=>ids.reduce((s,{i})=>s+d.profiles[profile][type][i][f],0));
+}
+const series=(type='total')=>sumSeries([group],type),selectedName=()=>d.groups.find(g=>g.key===group)?.label||group.replace('missing:','');
+async function getMask(i,mode=display){
+ const key=mode+':'+i;if(cache.has(key))return cache.get(key);if(pending.has(key))return pending.get(key);
+ const p=(async()=>{const b=Uint8Array.from(atob(packed[mode][i]),x=>x.charCodeAt(0)),stream=new Blob([b]).stream().pipeThrough(new DecompressionStream('deflate')),raw=new Uint8Array(await new Response(stream).arrayBuffer()),out=new Uint16Array(1080*900);let k=0;for(let j=0;j<raw.length;j+=4){const count=raw[j]+256*raw[j+1],value=raw[j+2]+256*raw[j+3];out.fill(value,k,k+count);k+=count}if(k!==out.length)throw Error('Mask length');cache.set(key,out);if(cache.size>16)cache.delete(cache.keys().next().value);return out})();pending.set(key,p);try{return await p}finally{pending.delete(key)}
+}
+function legend(x,y,width=390){
+ for(let k=0;k<width;k++){ctx.fillStyle=hex(rgb(Math.expm1(k/(width-1)*Math.log1p(100000))));ctx.fillRect(x+k,y,1,12)}
+ for(const F of [0,1000,10000,100000])text(F===100000?'100k+':F?F/1000+'k':'0',x+width*Math.log1p(F)/Math.log1p(100000),y+34,18,theme.muted,'center');
+}
+function overview(){
+ text('WHOLE-BODY TENSION',54,1061,27);legend(620,1044);text('Muscle group · '+(side==='both'?'both sides':side==='r'?'right':'left'),54,1103,21,theme.muted);text('Now · N',1012,1103,21,theme.muted,'right');
+ const x=315,w=560,y=1120,h=26,X=t=>x+w*t/d.duration;
+ d.overview_rows.forEach((row,r)=>{
+  const values=sumSeries(row.keys),top=y+r*h;text(row.label,54,top+20,21,theme.muted);
+  if(values){values.forEach((v,f)=>{const a=f?(d.times[f-1]+d.times[f])/2:0,b=f<d.times.length-1?(d.times[f]+d.times[f+1])/2:d.duration;ctx.fillStyle=hex(rgb(v));ctx.fillRect(X(a),top,Math.max(1,X(b)-X(a)+.3),22)});text(num(values[current]),1012,top+20,23,theme.fg,'right')}
+  else{ctx.fillStyle='#27394c';ctx.fillRect(x,top,w,22);text('NOT MODELED',x+w/2,top+17,17,theme.muted,'center');text('—',1012,top+20,23,theme.muted,'right')}
+ });
+ line([X(d.times[current]),y-5],[X(d.times[current]),y+d.overview_rows.length*h-4],theme.fg,2);
+ [0,d.duration/2,d.duration].forEach(t=>text(t.toFixed(2)+' s',X(t),1520,22,theme.muted,'center'));
+}
+function detail(){
+ const total=series(),active=series('active'),passive=series('passive');text(selectedName(),54,1062,32);text(side==='both'?'BILATERAL TOTAL':side==='r'?'RIGHT SIDE':'LEFT SIDE',54,1099,23,theme.muted);text(total?num(total[current])+' N':group.startsWith('missing:')?'Not modeled':'Parameter review',54,1155,total?48:30);text('Tension · N · log color',600,1110,22,theme.muted);legend(620,1130);
+ text('Total',666,1255,24,theme.cyan);text('Active',779,1255,24,theme.fg);text('Passive',889,1255,24,theme.orange);
+ if(!total)return;const rect={x:132,y:1294,w:880,h:160},max=Math.max(1,...total)*1.08,X=t=>rect.x+rect.w*t/d.duration,Y=v=>rect.y+rect.h-rect.h*v/max;
+ ctx.fillStyle='#6fa8c119';ctx.fillRect(X(d.takeoff_s),rect.y,X(d.landing_s)-X(d.takeoff_s),rect.h);
+ for(let k=0;k<3;k++){const v=max*k/2;line([rect.x,Y(v)],[rect.x+rect.w,Y(v)],theme.line,1);text(v>=1e4?Math.round(v/1000)+'k':num(v),rect.x-15,Y(v)+8,24,theme.muted,'right')}
+ [0,d.duration/2,d.duration].forEach(t=>text(t.toFixed(2)+' s',X(t),1488,23,theme.muted,'center'));
+ for(const [s,color,width,dash] of [[total,theme.cyan,5,[]],[active,theme.fg,2,[8,6]],[passive,theme.orange,3,[]]]){ctx.strokeStyle=color;ctx.lineWidth=width;ctx.setLineDash(dash);ctx.beginPath();s.forEach((v,i)=>i?ctx.lineTo(X(d.times[i]),Y(v)):ctx.moveTo(X(d.times[i]),Y(v)));ctx.stroke()}
+ ctx.setLineDash([]);line([X(d.times[current]),rect.y],[X(d.times[current]),rect.y+rect.h],theme.fg,2);ctx.fillStyle=theme.cyan;ctx.beginPath();ctx.arc(X(d.times[current]),Y(total[current]),5,0,Math.PI*2);ctx.fill();let area=0;for(let i=1;i<total.length;i++)area+=(total[i]+total[i-1])*.5*(d.times[i]-d.times[i-1]);text('Mean '+num(area/d.duration)+' N',54,1520,24,theme.muted);text('Sample peak '+num(Math.max(...total))+' N',1012,1520,24,theme.muted,'right');
+}
+async function paint(){
+ const own=++version,frame=current,mode=display,mask=await getMask(frame,mode),im=images[mode][frame];
+ if(!im.complete||!im.naturalWidth)await new Promise((r,j)=>{im.addEventListener('load',r,{once:true});im.addEventListener('error',j,{once:true})});if(own!==version)return;
+ ctx.fillStyle=theme.bg;ctx.fillRect(0,0,1080,1920);text('VERTICAL JUMP',54,66,44);text('Whole-body '+(mode==='anatomy'?'muscle anatomy':'humanoid')+' · 180 cm / 90 kg',54,113,25,theme.muted);text('DRAFT',1012,57,24,'#edbd94','right');text(phase(d.times[frame]),1012,105,25,theme.muted,'right');text('FRONT',284,160,25,theme.muted,'center');text('BACK',795,160,25,theme.muted,'center');ctx.drawImage(im,B.x,B.y,B.w,B.h);
+ const lut=new Array(256);lut[0]=[255,255,255];d.groups.forEach((g,i)=>lut[g.id]=g.display_id?rgb(d.profiles[profile].total[i][frame]):lut[0]);const out=pixels.data;
+ for(let j=0;j<mask.length;j++){const code=mask[j],id=code>>8,a=code&255,c=lut[id]||lut[0],k=j*4;out[k]=255-a*(255-c[0])/255;out[k+1]=255-a*(255-c[1])/255;out[k+2]=255-a*(255-c[2])/255;out[k+3]=255}
+ hx.putImageData(pixels,0,0);sx.clearRect(0,0,1080,900);sx.globalCompositeOperation='source-over';sx.filter=mode==='humanoid'?'blur(8px)':'none';sx.drawImage(heat,0,0);sx.filter='none';sx.globalCompositeOperation='destination-in';sx.drawImage(im,0,0);sx.globalCompositeOperation='source-over';ctx.globalCompositeOperation='multiply';ctx.drawImage(soft,B.x,B.y,B.w,B.h);ctx.globalCompositeOperation='source-over';
+ const R=d.ground_reaction.r[frame][2],L=d.ground_reaction.l[frame][2];text('Ground contact · R '+num(R)+' N / L '+num(L)+' N',54,1018,24,theme.muted);
+ chart==='overview'?overview():detail();ctx.fillStyle=theme.bg;ctx.fillRect(0,1536,1080,384);$('time').value=frame;$('time-label').textContent=d.times[frame].toFixed(2)+' s';window.tensionViewer.lastPainted=frame;
+}
+function announce(){const v=series();$('selected').textContent=selectedName()+' · '+(v?num(v[current])+' N':'unmodeled / parameter review')}
+function pause(){playing=false;$('play').textContent='Play'}
+async function setFrame(i){current=Math.max(0,Math.min(d.times.length-1,i));await paint();announce();return current}
+async function select(g,s='both',p='standard'){group=g;side=s;profile=p;chart='detail';$('group').value=g;$('side').value=s;$('profile').value=p;$('chart').value=chart;await paint();announce()}
+async function setDisplay(mode){if(!['anatomy','humanoid'].includes(mode))throw Error('Display mode');display=mode;$('display').value=mode;await paint()}
+async function setChart(mode){chart=mode;$('chart').value=mode;await paint()}
+function animate(now){if(!playing)return;const t=((now-start)/1000)%d.duration;let i=0;while(i<d.times.length-1&&Math.abs(d.times[i+1]-t)<Math.abs(d.times[i]-t))i++;if(i!==current){current=i;paint()}requestAnimationFrame(animate)}
+$('play').onclick=()=>{if(playing)pause();else{playing=true;start=performance.now()-d.times[current]*1000;$('play').textContent='Pause';requestAnimationFrame(animate)}};$('time').oninput=()=>{pause();setFrame(+$('time').value)};
+const keys=[];d.groups.forEach(g=>{if(keys.includes(g.key))return;keys.push(g.key);const o=document.createElement('option');o.value=g.key;o.textContent=g.label+(g.status!=='computed'?' · review':'');$('group').append(o)});d.unmodeled_groups.forEach(g=>{const o=document.createElement('option');o.value='missing:'+g;o.textContent=g+' · not modeled';$('group').append(o)});$('group').value=group;$('time').max=d.times.length-1;
+for(const id of ['group','side','profile'])$(id).onchange=()=>select($('group').value,$('side').value,$('profile').value);$('display').onchange=()=>setDisplay($('display').value);$('chart').onchange=()=>setChart($('chart').value);
+canvas.onclick=async e=>{const r=canvas.getBoundingClientRect(),x=(e.clientX-r.left)*1080/r.width,y=(e.clientY-r.top)*1920/r.height;if(chart==='overview'&&y>=1120&&y<1120+d.overview_rows.length*26){const row=d.overview_rows[Math.floor((y-1120)/26)];if(row.keys.length)await select(row.keys[0],side,profile);return}if(x<B.x||x>B.x+B.w||y<B.y||y>B.y+B.h)return;const mask=await getMask(current),px=Math.min(1079,Math.floor((x-B.x)/B.w*1080)),py=Math.min(899,Math.floor((y-B.y)/B.h*900)),id=mask[py*1080+px]>>8,g=d.groups.find(g=>g.id===id);if(g)await select(g.key,g.side,profile)};
+window.tensionViewer={setFrame,select,setDisplay,setChart,data:d,getState:()=>({frame:current,group,side,profile,display,chart,value:series()?.[current]??null}),overviewValues:()=>d.overview_rows.map(row=>({label:row.label,value:sumSeries(row.keys)?.[current]??null})),findRegionPoint:async(id,half)=>{const a=await getMask(current);for(let k=4320;k<a.length-4320;k++){const x=k%1080;if(x>4&&x<1075&&(a[k]>>8)===id&&(a[k]&255)>240&&[-2160,-1080,-2,-1,1,2,1080,2160].every(delta=>(a[k+delta]>>8)===id)&&(half==='anatomy'?x<540:x>=540))return{x:B.x+(x+.5)/1080*B.w,y:B.y+(Math.floor(k/1080)+.5)/900*B.h}}return null},lastPainted:-1};
+if(new URLSearchParams(location.search).has('portrait'))document.body.classList.add('portrait-only');let loaded=0;for(const mode of ['anatomy','humanoid'])d.times.forEach((_,i)=>{const im=new Image();im.onload=()=>{$('loading').textContent='Frames ready: '+(++loaded)+' / '+(2*d.times.length)};im.src=(mode==='anatomy'?'anatomy/base/':'base/')+'frame_'+i.toString().padStart(4,'0')+'.png';images[mode].push(im)});setFrame(0).catch(e=>{$('loading').textContent=e.message;console.error(e)});
+})();
+</script></html>

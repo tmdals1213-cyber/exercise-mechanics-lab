@@ -1,0 +1,74 @@
+{
+  "metric": "Joint reaction resultant magnitude, bilateral mean per side; sampled model estimates, not contact pressure.",
+  "joints": [
+    {
+      "joint": "HIP",
+      "jump": {
+        "peak_N": 28121.77295106565,
+        "peak_time_s": 1.233,
+        "mean_N": 5501.087913034705,
+        "integral_Ns": 13356.641452848262,
+        "window_s": [
+          0.2,
+          2.628
+        ]
+      },
+      "squat": {
+        "peak_N": 22933.004319592907,
+        "peak_time_s": 1.032,
+        "mean_N": 9993.804714180531,
+        "integral_Ns": 29981.41414254159,
+        "window_s": [
+          0.25,
+          3.25
+        ]
+      }
+    },
+    {
+      "joint": "KNEE",
+      "jump": {
+        "peak_N": 23373.71242344656,
+        "peak_time_s": 0.934,
+        "mean_N": 5743.031080905531,
+        "integral_Ns": 13944.079464438628,
+        "window_s": [
+          0.2,
+          2.628
+        ]
+      },
+      "squat": {
+        "peak_N": 25565.244080249948,
+        "peak_time_s": 0.932,
+        "mean_N": 9452.382236994805,
+        "integral_Ns": 28357.146710984412,
+        "window_s": [
+          0.25,
+          3.25
+        ]
+      }
+    },
+    {
+      "joint": "ANKLE",
+      "jump": {
+        "peak_N": 39881.4160959327,
+        "peak_time_s": 1.267,
+        "mean_N": 6056.735735664855,
+        "integral_Ns": 14705.75436619427,
+        "window_s": [
+          0.2,
+          2.628
+        ]
+      },
+      "squat": {
+        "peak_N": 8299.693476875615,
+        "peak_time_s": 0.968,
+        "mean_N": 5144.337974929252,
+        "integral_Ns": 15433.013924787756,
+        "window_s": [
+          0.25,
+          3.25
+        ]
+      }
+    }
+  ]
+}

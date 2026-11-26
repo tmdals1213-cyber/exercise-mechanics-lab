@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "qpos_max_abs_error": 0.0,
+  "source_retained_m": 3.0089738484319533,
+  "model_sha256": "9e10ca9aa41ef0a255a40f13ee153cb0139de1c8ef8d10167b978bc87a126c6c",
+  "historical_rollout_data_required": false
+}

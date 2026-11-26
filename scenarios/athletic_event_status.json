@@ -1,0 +1,35 @@
+{
+  "scope": "Event rollout status; not official entrance-exam rules or scoring",
+  "shared_outputs": [
+    "whole-body muscle tension",
+    "phase-synchronized timelines",
+    "external contact force",
+    "anatomy and humanoid displays"
+  ],
+  "events": [
+    {
+      "id": "vertical_jump",
+      "label": "Vertical jump / Sargent preparation",
+      "status": "development_reference",
+      "motion": "results/jump_validation/vertical/acceleration_2400hz/motion.npz",
+      "visualization": "results/tension_visualization/index.html",
+      "limitations": [
+        "excessive prescribed-motion transients remain",
+        "Sargent reach/touch protocol and score are not modeled"
+      ],
+      "load_interpretation": "legacy rejected; corrected fullbody jump still fails time-resolution acceptance"
+    },
+    {
+      "id": "standing_long_jump",
+      "label": "Standing long jump",
+      "status": "recovery_constraints_need_repair",
+      "next": true,
+      "partial_motion": "results/jump_validation/long/acceleration_600hz/partial_motion.npz",
+      "failure_time_s": 2.545,
+      "recovery_diagnostic": "results/jump_validation/long/acceleration_600hz/recovery_diagnostic.json",
+      "failure_reproduced_and_LP_infeasible": true,
+      "next_gate": "complete continuous takeoff, flight, landing and recovery with consistent contact and joint limits before solving/exporting all muscle tensions"
+    }
+  ],
+  "current_priority": "verified rigid mechanics and reduced calibration before event expansion"
+}

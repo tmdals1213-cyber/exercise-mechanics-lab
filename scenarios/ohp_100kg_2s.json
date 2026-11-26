@@ -1,0 +1,59 @@
+{
+  "id": "ohp_100kg_2s",
+  "subject": {
+    "sex": "male",
+    "height_m": 1.8,
+    "mass_kg": 90.0,
+    "anthropometry": "generic_male_segment_lengths_and_deLeva_mass_fractions",
+    "strength_profile": "MoBL_ARMS_original_Fmax_unmodified",
+    "muscle_strength_multiplier": 1.0
+  },
+  "geometry": {
+    "shoulder_height_fraction": 0.82,
+    "shoulder_width_m": 0.42,
+    "upper_arm_m": 0.29124,
+    "forearm_m": 0.2772,
+    "wrist_to_grip_m": 0.09,
+    "grip_width_m": 0.55,
+    "bar_start_height_m": 1.65,
+    "bar_start_forward_offset_m": 0.18
+  },
+  "movement": {
+    "exercise": "standing_strict_overhead_press",
+    "repetitions": 1,
+    "phase": "concentric_to_lockout_only",
+    "ascent_s": 2.0,
+    "ramp_s": 0.15,
+    "lockout_hold_s": 0.5,
+    "sample_hz": 240,
+    "profile": "ninth_order_velocity_ramps",
+    "symmetric": true,
+    "leg_drive": false,
+    "grinding": false,
+    "torso_lean_deg": 0.0
+  },
+  "load": {
+    "barbell_total_mass_kg": 100.0,
+    "gravity_m_s2": 9.80665
+  },
+  "analysis": {
+    "stage": "opensim_geometry_two_axis_force_demand",
+    "musculoskeletal_model": "models/mobl/MOBL_ARMS_41.osim",
+    "muscle_force_status": "computed_two_axis_mechanical_demand",
+    "stress_status": "not_computed",
+    "fatigue_status": "not_modelled",
+    "damage_status": "not_modelled",
+    "force_length_velocity_correction": false,
+    "balanced_coordinates": [
+      "shoulder_elv",
+      "elbow_flexion"
+    ]
+  },
+  "presentation": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "bottom_safe_fraction": 0.2,
+    "right_safe_fraction": 0.12
+  }
+}

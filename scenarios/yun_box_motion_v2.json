@@ -1,0 +1,75 @@
+{
+  "scope": "Kinematic candidate from the user-selected broadcast replay; no force inference.",
+  "source": "https://www.youtube.com/watch?v=ngyj9rSEjLc&t=155s",
+  "tracking_file": "results/reference_box_jump/yun_user_video/rtmpose_motion_v2/stabilized_observations.npz",
+  "interval_s": [
+    158.0,
+    159.8
+  ],
+  "image_size": [
+    1280,
+    720
+  ],
+  "support_boundaries_s": [
+    158.5,
+    158.69,
+    159.16,
+    159.26
+  ],
+  "support_annotation": "Conservative approximate phase boundaries from visual review, pending frame-level verification. Force analysis is prohibited.",
+  "initial_time_warp": [
+    [
+      158.0,
+      158.0
+    ],
+    [
+      159.33,
+      159.33
+    ],
+    [
+      159.8,
+      159.33
+    ]
+  ],
+  "initialization_is_measured_motion": false,
+  "box_height_fit_upper_m": 2.0,
+  "box_height_m_measured": null,
+  "physical_playback_rate_verified": false,
+  "force_analysis_allowed": false,
+  "trunk_rotation_bounds_deg": {
+    "lat_bending": 5,
+    "axial_rotation": 10,
+    "flex_extension": 15
+  },
+  "trunk_bound_scope": "Explicit near-sagittal, small spinal deformation assumption from visual reference review; global torso lean through pelvis/hip motion remains free.",
+  "frozen_coordinates": {
+    "shoulder_rot_r": 0.0,
+    "shoulder_rot_l": 0.0
+  },
+  "arm_sagittal_sigma_m": 0.03,
+  "arm_cartesian_acceleration_weight": 0.025,
+  "flight_COM_interval_s": [
+    158.75,
+    159.09
+  ],
+  "flight_COM_acceleration_sigma_m_s2": [
+    0.3,
+    0.3,
+    0.8
+  ],
+  "ground_anchor_start_s": 158.14,
+  "contact_anchor_sigma_m": 0.005,
+  "contact_z_sigma_m": 0.005,
+  "root_translation_upper_m": [
+    2.5,
+    2.0
+  ],
+  "camera_motion_removed": true,
+  "assumed_physical_playback_rate": 1.0,
+  "assumption_notes": [
+    "Axial humeral rotation held at anatomical reference; sagittal arm swing remains free.",
+    "Cartesian arm trajectory is regularized rather than penalizing plane-of-elevation Euler changes.",
+    "Whole-body COM, not pelvis, follows near-zero horizontal acceleration and gravity over the conservative airborne interval.",
+    "Foot anchors apply after the final foot plant; arrival and standing are retained."
+  ]
+}

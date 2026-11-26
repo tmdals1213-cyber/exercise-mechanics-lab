@@ -1,0 +1,34 @@
+"""Compact visual evidence for the actual controller regression and fix."""
+from pathlib import Path
+import json
+import numpy as np
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+from jump_monitor_data import ROOT,read,atomic
+
+def main():
+    folder=ROOT/'results/landing_controller_audit_v1';chosen=read(folder/'damped_profile_summary.json');assert chosen is not None;rows=chosen['results'];summary=read(folder/'fix_validation_summary.json');summary['state_recovery_damped']=chosen
+    out=ROOT/'deliverables/landing_controller_audit';out.mkdir(parents=True,exist_ok=True);oldrows=read(folder/'relapse_cases.json');cases=[oldrows[0],next(c for c in oldrows if c['dt_s']==.00025)]
+    plt.rcParams.update({'font.family':'DejaVu Sans','font.size':10,'figure.facecolor':'#0d1726','axes.facecolor':'#111f2e','axes.edgecolor':'#50677c','text.color':'#e7eff7','axes.labelcolor':'#b5c6d6','xtick.color':'#b5c6d6','ytick.color':'#b5c6d6','grid.color':'#30465b','legend.facecolor':'#111f2e','legend.edgecolor':'#30465b'})
+    fig,axes=plt.subplots(2,2,figsize=(12,7.1),layout='constrained');evidence=[]
+    for i,case in enumerate(cases):
+        original=Path(case['folder']);new=Path(next(r['folder']for r in rows if r['case'].startswith(case['id'])and r['dt_s']==case['dt_s']));report0=read(original/'control_summary.json');report1=read(new/'control_summary.json');z0=np.load(original/'control_motion.npz');z1=np.load(new/'control_motion.npz');td=report0['touchdown_s']
+        for z,r,name,color in [(z0,report0,'Previous controller','#ee8796'),(z1,report1,'State-based recovery','#77dac7')]:
+            t=z['times']-td;mask=t>=0;axes[i,0].plot(t[mask],np.linalg.norm(z['velocity'][mask],axis=1),color=color,label=name,linewidth=2);axes[i,1].plot(t[mask],z['com'][mask,2],color=color,label=name,linewidth=2)
+        for ax in axes[i]:ax.grid(alpha=.45);ax.set_xlim(0,2.5);ax.set_xlabel('Time after first foot contact (s)')
+        axes[i,0].set_ylabel('COM speed (m/s)');axes[i,1].set_ylabel('COM height (m)');axes[i,0].set_title(f"Case {i+1} / {case['dt_s']*1000:g} ms / same launch");axes[i,1].set_title('Recovery, then controlled rise')
+        body=report0['first_body_floor_contact_s']-td
+        for ax in axes[i]:ax.axvline(body,color='#ee8796',linestyle=':',alpha=.8)
+        evidence.append(dict(source=case,new_folder=str(new),old_fell=report0['fell'],new_fell=report1['fell'],new_stable=report1['stable_landing'],first_contact_distance_difference_m=report1['first_contact_heel_distance_m']-report0['first_contact_heel_distance_m']))
+    axes[0,0].legend(loc='upper right');fig.suptitle('Post-contact control: same takeoff, different recovery\nFixed body, joint-torque limits and native contact physics',fontsize=15);fig.savefig(out/'controller_comparison.png',dpi=150);plt.close(fig)
+    matrix=''
+    for r in sorted(rows,key=lambda q:(q['case'],q['variant'])):
+        matrix+=f"<tr><td>{r['case']}</td><td>{r['variant']}</td><td>{r['first_contact_m']:.3f}</td><td>{'Stable'if r['strict_stable']and r['dynamics_eligible']else'Not qualified'}</td></tr>"
+    fix=chosen;data=dict(status='completed',tested_controller='state_recovery_damped',cases=fix['total_cases'],qualified_cases=fix['stable_cases'],all_precontact_replays_exact=fix['all_precontact_replays_exact'],maximum_first_contact_error_m=fix['maximum_first_contact_error_m'],comparison=evidence,ablation_results=read(folder/'ablation_results.json'),validation_summary=summary,validation_results=rows,local_feedback_sign=read(folder/'feedback_sign.json'),interpretation='The two examined near-rest relapses are affected by interacting position/attitude feedback. Disabling either auxiliary loop prevents the original failure at the native source timestep. The revised controller removes the direct root-pitch auxiliary loop, gates standing-up progression by state and increases active velocity feedback. No global stability proof is claimed.',no_global_stability_or_human_validation_claim=True)
+    atomic(out/'summary.json',data)
+    html=f'''<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>착지 제어 진단</title><style>:root{{color-scheme:dark}}body{{background:#0d1726;color:#e7eff7;font:16px/1.7 system-ui;max-width:1100px;margin:30px auto;padding:0 20px}}h1{{font-size:27px}}h2{{font-size:21px}}a{{color:#77dac7}}img{{width:100%}}.note{{border-left:3px solid #f4a46d;padding-left:16px}}table{{border-collapse:collapse;width:100%;font-size:12px}}td,th{{padding:8px;text-align:left;border-bottom:1px solid #30465b}}.scroll{{overflow:auto}}small{{color:#aac0d2}}</style><h1>착지 후 다시 가속하는 제어 문제</h1><p><a href="/landing_live.html">실시간 학습 모니터</a></p><p>실제 저장된 시도 중 무게중심 속도가 약 0.02m/s까지 낮아지고 잠시 버틴 뒤 다시 가속해 넘어진 사례를 찾았습니다. 무게중심이 느리다는 것만으로 완전한 정적 평형은 아니므로, 발 지지와 각운동량도 함께 확인했습니다.</p><p class="note"><b>능동 제어는 있었지만, 보정들을 겹쳐 쓰는 구성이 실패에 기여했습니다.</b> 발목 균형 보정 또는 고관절의 골반 각도 보정 중 하나를 끈 대조에서는 두 원본 사례 모두 버텼습니다. 단순히 시간에 맞춘 자세 복귀만 제거한 대조는 실패했습니다. 발목 속도 피드백의 국소 부호는 감쇠 방향이어서, 단순한 부호 반전으로 진단하지 않았습니다.</p><img src="controller_comparison.png" alt="Same launches with previous and revised postcontact controllers"><h2>수정한 착지 제어</h2><p>관절 자세 추종과 지면 접촉 반응 제어는 유지합니다. 별도로 골반을 정해진 각도로 빠르게 돌리던 루프는 제거했습니다. 일어서기 진행은 무게중심 속도·각운동량·발 지지 여유가 확보될 때만 늘어납니다. 관절 자세, 지지 강성/감쇠, 높이 목표가 같은 진행도를 따릅니다. 발목·고관절·무릎·체간의 내부 토크로 반응하며 외부에서 힘을 추가하지 않습니다.</p><p><b>서로 다른 파라미터 3사례 × 3개 시간 스텝에서 {fix['stable_cases']}/{fix['total_cases']}회 통과.</b> 이 시험 범위의 결과이며 모든 자세의 안정성을 보장하지 않습니다. 첫 접촉까지의 관절 궤적은 정확히 같았고, 첫 접촉 거리 차이는 최대 {fix['maximum_first_contact_error_m']:.2g}m였습니다. 체형·관성·토크 한계·중력·마찰·지면 접촉 설정은 바꾸지 않았습니다.</p><p>넘어지지 않고 일어서려면 몸의 에너지가 증가할 수도 있으므로, 제어기가 양의 일을 했다는 사실만으로 오류라고 보지는 않았습니다. 실제 항목별 대조와 같은 이륙 조건의 재계산으로 구분했습니다.</p><details><summary>검증 결과와 범위</summary><div class="scroll"><table><tr><th>Case / timestep</th><th>Control</th><th>First contact (m)</th><th>Recovery</th></tr>{matrix}</table></div><p>안정 판정은 몸의 지면 접촉 없이 착지 후 2.5초 회복, 마지막 0.5초의 속도·각운동량과 관절 범위 및 자유비행 역학 검사를 포함합니다. 공인 기록이나 개인의 회복 능력을 검증한 결과는 아닙니다. 시간 스텝 0.5 / 0.25 / 0.125ms. 상세한 발가락 제어·회복 스텝·연부조직은 추가하지 않았습니다.</p><p><a href="summary.json">원본 비교와 검증 데이터</a></p></details><small>Native rigid-body simulation / same takeoff and strength profile / controller diagnosis, not muscle-force or physiological validation.</small><script>if(location.protocol!=='file:'){{document.querySelector('img').src='/controller_audit/controller_comparison.png';document.querySelector('a[href="summary.json"]').href='/controller_audit/summary.json'}}</script></html>'''
+    html=html.replace('관절 자세, 지지 강성/감쇠, 높이 목표가 같은 진행도를 따릅니다.','관절 자세, 지지 강성/감쇠, 높이 목표가 같은 진행도를 따릅니다. 초기 접촉 때의 능동 속도 감쇠를 고관절·무릎 55, 발목 25 N·m·s/rad로 보완했습니다. 이 토크도 기존의 순 관절 토크 한계를 따릅니다. 뼈나 인대의 수동 점성으로 해석하지 않습니다.')
+    (out/'index.html').write_text(html,encoding='utf-8');print('CONTROLLER_AUDIT_REPORT_READY',fix['stable_cases'],fix['total_cases'],flush=True)
+
+if __name__=='__main__':main()

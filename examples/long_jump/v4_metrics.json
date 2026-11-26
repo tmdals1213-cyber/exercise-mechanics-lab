@@ -1,0 +1,202 @@
+{
+  "cases": {
+    "initial": {
+      "key": "initial",
+      "source": "D:\\Exercise_mechanics\\results\\controlled_broad_jump\\landing_stability_v3\\worker_01\\episode_000001",
+      "dt_s": 0.000125,
+      "source_replay_qpos_error": 0.0,
+      "peak_push": {
+        "ground": 4.028251810859286,
+        "hip": 425.6316011640497,
+        "knee": 168.14235705305816,
+        "ankle": 260.5211662898504
+      },
+      "full_cycle_peak": {
+        "ground": 17.3130132427133,
+        "hip": 425.6316011640497,
+        "knee": 372.6215539364238,
+        "ankle": 387.3675687346633
+      },
+      "phase_times": [
+        0.0,
+        0.6348101621265873,
+        1.4574358915936398,
+        1.66775,
+        2.162375,
+        4.656
+      ],
+      "checked_distance_m": 2.186597764603123,
+      "joint_limits_Nm": [
+        654.6801101831106,
+        493.352071101472,
+        467.81349219012395
+      ],
+      "torque_limits_all_Nm": {
+        "flex_extension": 1327.9409669323736,
+        "shoulder_elv_r": 121.6162109934385,
+        "elbow_flexion_r": 37.2781055470349,
+        "shoulder_elv_l": 121.61789303538951,
+        "elbow_flexion_l": 37.27881023811986,
+        "hip_flexion_r": 654.6801101831106,
+        "knee_angle_r": 493.352071101472,
+        "ankle_angle_r": 467.81349219012395,
+        "hip_flexion_l": 654.6497502936215,
+        "knee_angle_l": 500.0357712679794,
+        "ankle_angle_l": 508.0810423562941
+      },
+      "max_torque_cap_ratio": 0.8280384708896624,
+      "scope": "Native resultant GRF / BW; right-side net torques / Nm. Not individual muscle forces."
+    },
+    "middle_one": {
+      "key": "middle_one",
+      "source": "D:\\Exercise_mechanics\\results\\controlled_broad_jump\\landing_stability_v3\\worker_01\\episode_000103",
+      "dt_s": 0.000125,
+      "source_replay_qpos_error": 0.0,
+      "peak_push": {
+        "ground": 4.533573965563699,
+        "hip": 426.84467065298077,
+        "knee": 148.92622479657615,
+        "ankle": 318.00243223588797
+      },
+      "full_cycle_peak": {
+        "ground": 17.710076743257606,
+        "hip": 426.84467065298077,
+        "knee": 364.52360688070496,
+        "ankle": 419.4210303797622
+      },
+      "phase_times": [
+        0.0,
+        0.6269972808442912,
+        1.470931725908186,
+        1.67625,
+        2.162875,
+        4.656
+      ],
+      "checked_distance_m": 2.455843769345393,
+      "joint_limits_Nm": [
+        654.6801101831106,
+        493.352071101472,
+        467.81349219012395
+      ],
+      "torque_limits_all_Nm": {
+        "flex_extension": 1327.9409669323736,
+        "shoulder_elv_r": 121.6162109934385,
+        "elbow_flexion_r": 37.2781055470349,
+        "shoulder_elv_l": 121.61789303538951,
+        "elbow_flexion_l": 37.27881023811986,
+        "hip_flexion_r": 654.6801101831106,
+        "knee_angle_r": 493.352071101472,
+        "ankle_angle_r": 467.81349219012395,
+        "hip_flexion_l": 654.6497502936215,
+        "knee_angle_l": 500.0357712679794,
+        "ankle_angle_l": 508.0810423562941
+      },
+      "max_torque_cap_ratio": 0.8965560792532795,
+      "scope": "Native resultant GRF / BW; right-side net torques / Nm. Not individual muscle forces."
+    },
+    "middle_two": {
+      "key": "middle_two",
+      "source": "D:\\Exercise_mechanics\\results\\controlled_broad_jump\\landing_stability_v3\\worker_01\\episode_000335",
+      "dt_s": 0.000125,
+      "source_replay_qpos_error": 0.0,
+      "peak_push": {
+        "ground": 4.773431658973412,
+        "hip": 498.25863219070203,
+        "knee": 185.989553664499,
+        "ankle": 345.8869138399791
+      },
+      "full_cycle_peak": {
+        "ground": 18.199500133020724,
+        "hip": 498.25863219070203,
+        "knee": 380.9697053188446,
+        "ankle": 441.1535864370829
+      },
+      "phase_times": [
+        0.0,
+        0.616945112474998,
+        1.4926297502407093,
+        1.687875,
+        2.16975,
+        4.664
+      ],
+      "checked_distance_m": 2.602189340515486,
+      "joint_limits_Nm": [
+        654.6801101831106,
+        493.352071101472,
+        467.81349219012395
+      ],
+      "torque_limits_all_Nm": {
+        "flex_extension": 1327.9409669323736,
+        "shoulder_elv_r": 121.6162109934385,
+        "elbow_flexion_r": 37.2781055470349,
+        "shoulder_elv_l": 121.61789303538951,
+        "elbow_flexion_l": 37.27881023811986,
+        "hip_flexion_r": 654.6801101831106,
+        "knee_angle_r": 493.352071101472,
+        "ankle_angle_r": 467.81349219012395,
+        "hip_flexion_l": 654.6497502936215,
+        "knee_angle_l": 500.0357712679794,
+        "ankle_angle_l": 508.0810423562941
+      },
+      "max_torque_cap_ratio": 0.9430116783758639,
+      "scope": "Native resultant GRF / BW; right-side net torques / Nm. Not individual muscle forces."
+    },
+    "best_checked": {
+      "key": "best_checked",
+      "source": "D:\\Exercise_mechanics\\results\\controlled_broad_jump\\landing_stability_v3\\worker_00\\episode_000405",
+      "dt_s": 0.0005,
+      "source_replay_qpos_error": 0.0,
+      "peak_push": {
+        "ground": 5.270742355718806,
+        "hip": 516.3809785709492,
+        "knee": 209.7161367942638,
+        "ankle": 367.83649846370406
+      },
+      "full_cycle_peak": {
+        "ground": 19.413699847191243,
+        "hip": 516.3809785709492,
+        "knee": 409.6430948219181,
+        "ankle": 458.86674578631835
+      },
+      "phase_times": [
+        0.0,
+        0.6094812178693614,
+        1.478292132843401,
+        1.6705,
+        2.193,
+        4.688
+      ],
+      "checked_distance_m": 2.737574934577082,
+      "joint_limits_Nm": [
+        654.6801101831106,
+        493.352071101472,
+        467.81349219012395
+      ],
+      "torque_limits_all_Nm": {
+        "flex_extension": 1327.9409669323736,
+        "shoulder_elv_r": 121.6162109934385,
+        "elbow_flexion_r": 37.2781055470349,
+        "shoulder_elv_l": 121.61789303538951,
+        "elbow_flexion_l": 37.27881023811986,
+        "hip_flexion_r": 654.6801101831106,
+        "knee_angle_r": 493.352071101472,
+        "ankle_angle_r": 467.81349219012395,
+        "hip_flexion_l": 654.6497502936215,
+        "knee_angle_l": 500.0357712679794,
+        "ankle_angle_l": 508.0810423562941
+      },
+      "max_torque_cap_ratio": 0.9808753989502946,
+      "scope": "Native resultant GRF / BW; right-side net torques / Nm. Not individual muscle forces."
+    }
+  },
+  "comparison_keys": [
+    "initial",
+    "middle_one",
+    "middle_two",
+    "best_checked"
+  ],
+  "individual_muscle_tensions_available": false,
+  "force_unit": "BW",
+  "torque_unit": "Nm",
+  "summary_scope": "Push-off peaks; full-cycle native traces retained separately."
+}

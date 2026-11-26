@@ -1,0 +1,79 @@
+{
+  "external_assets": [
+    {
+      "path": "assets/fullbody/fullbody_muscles_skin.glb",
+      "bytes": 27930740,
+      "sha256": "27d77489d748cbdc8c6eb5ad9ae28ee7cf705d2473777f1430dadc31b85ee303"
+    },
+    {
+      "path": "assets/motion_guides/long_jump_geometry_only.npz",
+      "bytes": 799759,
+      "sha256": "66417f92152bd4d68db2857fb8cf81d7734ff896f071c612c7f4c8a350c80d5b"
+    },
+    {
+      "path": "models/foundation/TSM_subject_noWeight.osim",
+      "bytes": 339669,
+      "sha256": "c357e61eb266558c0bfe9212462fbc1d621e0398c2eafc4e1a4aa92fe5c7a9ff"
+    },
+    {
+      "path": "models/fullbody/myofullbody_90kg.mjb",
+      "bytes": 73330281,
+      "sha256": "fa7b6ab6bd6a6e11a6caf6f04aa66121f4e3c7b6c3b8fc22d4136cdd760ed0a5"
+    },
+    {
+      "path": "models/high_flex/RajagopalLaiUhlrich2023.osim",
+      "bytes": 922865,
+      "sha256": "8f30d0b64750b87eb7f705907862590535212b4afd7e919faa3fd7d1683d22ec"
+    },
+    {
+      "path": "models/mobl/MOBL_ARMS_41.osim",
+      "bytes": 882134,
+      "sha256": "8bf1c3f0db841defaaca2b906ded154a2b1700531b96b491aab3dbc9a7343289"
+    },
+    {
+      "path": "models/mobl/MOBL_ARMS_scaled_rigid_tendon.osim",
+      "bytes": 792962,
+      "sha256": "71faaed1315f5c829911aa1a853649407941f325eaf5c7b5820bea5e5a779efb"
+    },
+    {
+      "path": "models/rmr/TSM_subject_noWeight.osim",
+      "bytes": 339669,
+      "sha256": "c357e61eb266558c0bfe9212462fbc1d621e0398c2eafc4e1a4aa92fe5c7a9ff"
+    },
+    {
+      "path": "datasets/cmu_75_12/source_joint_trajectories.npz",
+      "bytes": 328592,
+      "sha256": "8ae9cc4fcaf77febbf0321519deed5dd672806a802df00bbce3170227c75cb0d"
+    },
+    {
+      "path": "datasets/knee_model_reference/Rajagopal2016.osim",
+      "bytes": 874820,
+      "sha256": "3f5c5f23e486073f2ad2aa4a4967ffe2fcdd582b1e355512bc54f70c36376bf4"
+    },
+    {
+      "path": "datasets/knee_model_reference/RajagopalLaiUhlrich2023.osim",
+      "bytes": 922865,
+      "sha256": "8f30d0b64750b87eb7f705907862590535212b4afd7e919faa3fd7d1683d22ec"
+    },
+    {
+      "path": "datasets/cmj_calisti2025/source/catelli_3dof_model.osim",
+      "bytes": 914072,
+      "sha256": "f73f9e43cec29451239b9e96dc29b942a1ed113c6b115cbeadc7d41536a511db"
+    },
+    {
+      "path": "datasets/cmj_calisti2025/source/setup_IK_default.xml",
+      "bytes": 16957,
+      "sha256": "871133233bd4bf92cd8fff558a70668946998f17c60599c6d04257942cc4bd9a"
+    },
+    {
+      "path": "datasets/cmj_calisti2025/source/setup_scaling_default.xml",
+      "bytes": 39195,
+      "sha256": "cd7c24b3a5abbc3f191dc476b6ada133b0edf8dff5715b54195739c47621596b"
+    }
+  ],
+  "base_anatomy_source": "https://huggingface.co/datasets/myohub/myosuite-assets",
+  "base_anatomy_file": "composite/fullbody_muscles_skin.glb",
+  "notices": "docs/upstream_notices",
+  "external_source_archives_bundled": false,
+  "registered_compiled_example_included": true
+}

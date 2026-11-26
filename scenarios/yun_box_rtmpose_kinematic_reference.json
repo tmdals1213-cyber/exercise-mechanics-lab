@@ -1,0 +1,41 @@
+{
+  "scope": "Kinematic candidate from the user-selected broadcast replay; no force inference.",
+  "source": "https://www.youtube.com/watch?v=ngyj9rSEjLc&t=155s",
+  "tracking_file": "results/reference_box_jump/yun_user_video/rtmpose_full_body/motion_observations.npz",
+  "interval_s": [
+    157.52,
+    159.33
+  ],
+  "image_size": [
+    1280,
+    720
+  ],
+  "support_boundaries_s": [
+    158.5,
+    158.69,
+    159.16,
+    159.26
+  ],
+  "support_annotation": "Conservative approximate phase boundaries from visual review, pending frame-level verification. Force analysis is prohibited.",
+  "initial_time_warp": [
+    [
+      157.52,
+      157.52
+    ],
+    [
+      159.33,
+      159.33
+    ]
+  ],
+  "initialization_is_measured_motion": false,
+  "box_height_fit_upper_m": 2.0,
+  "box_height_m_measured": null,
+  "physical_playback_rate_verified": false,
+  "force_analysis_allowed": false,
+  "trunk_rotation_bounds_deg": {
+    "lat_bending": 5,
+    "axial_rotation": 10,
+    "flex_extension": 15
+  },
+  "trunk_bound_scope": "Explicit near-sagittal, small spinal deformation assumption from visual reference review; global torso lean through pelvis/hip motion remains free."
+}

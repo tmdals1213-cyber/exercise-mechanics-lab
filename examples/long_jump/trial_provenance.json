@@ -1,0 +1,98 @@
+{
+  "cases": {
+    "initial": {
+      "discovered_at_ppo_trial": 0,
+      "discovery_kind": "stable_anchor",
+      "discovery_id": "landing_stability_v3_worker_00_episode_000000",
+      "display_label": "BASELINE",
+      "supplemental_search": null,
+      "validation_report": "D:\\Exercise_mechanics\\results\\controlled_broad_jump\\landing_stability_v3\\validation_landing_stability_v3_worker_00_episode_000000_1795583421.json",
+      "render_source_id": "landing_stability_v3_worker_01_episode_000001",
+      "checked_distance_m": 2.186597764603123
+    },
+    "middle_one": {
+      "discovered_at_ppo_trial": 151,
+      "discovery_kind": "ppo_train",
+      "discovery_id": "landing_stability_v3_worker_00_episode_000054",
+      "display_label": "PPO TRIAL 151",
+      "supplemental_search": null,
+      "validation_report": "D:\\Exercise_mechanics\\results\\controlled_broad_jump\\landing_stability_v3\\validation_landing_stability_v3_worker_00_episode_000054_1795584968.json",
+      "render_source_id": "landing_stability_v3_worker_01_episode_000103",
+      "checked_distance_m": 2.455843769345393
+    },
+    "middle_two": {
+      "discovered_at_ppo_trial": 1092,
+      "discovery_kind": "ppo_train",
+      "discovery_id": "landing_stability_v3_worker_02_episode_000371",
+      "display_label": "PPO TRIAL 1,092",
+      "supplemental_search": null,
+      "validation_report": "D:\\Exercise_mechanics\\results\\controlled_broad_jump\\landing_stability_v3\\validation_landing_stability_v3_worker_02_episode_000371_1795590646.json",
+      "render_source_id": "landing_stability_v3_worker_00_episode_000405",
+      "checked_distance_m": 2.737574934577082
+    },
+    "best_checked": {
+      "discovered_at_ppo_trial": 9238,
+      "discovery_kind": "robust_confirmation",
+      "discovery_id": "robust_postlanding_v1_worker_00_episode_000002",
+      "display_label": "LOCAL TRIAL 80",
+      "supplemental_search": {
+        "algorithm": "PPO followed by bounded numerical postcontact-posture refinement",
+        "candidate_number": 80,
+        "winning_branch": "robust_postlanding_v1",
+        "winning_branch_candidate_number": 2,
+        "supplemental_native_evaluations": 315,
+        "PPO_training_trials_at_discovery": 9247,
+        "PPO_training_trials_at_stop": 9258,
+        "seed_report": "D:\\Exercise_mechanics\\deliverables\\jump_robust_postlanding\\seed_validation.json",
+        "not_a_PPO_update": true,
+        "all_branch_counts": {
+          "cutoff_finished_at": 1795678164.9412901,
+          "local_parameter_proposals_at_discovery": 80,
+          "local_native_simulations_at_discovery": 315,
+          "total_completed_local_parameter_proposals": 84,
+          "total_completed_local_native_simulations": 339,
+          "PPO_completed_trials": 9258,
+          "PPO_policy_updates": 192,
+          "PPO_trials_at_discovery": 9247,
+          "per_branch": [
+            {
+              "run": "robust_finish_v1",
+              "completed_native_evaluations": 83
+            },
+            {
+              "run": "robust_continuation_v1",
+              "completed_native_evaluations": 38
+            },
+            {
+              "run": "robust_launch_batch_v1",
+              "completed_native_evaluations": 120
+            },
+            {
+              "run": "robust_knee_refine_v1",
+              "completed_native_evaluations": 70
+            },
+            {
+              "run": "robust_postlanding_v1",
+              "completed_native_evaluations": 12
+            },
+            {
+              "run": "robust_landing_feedback_v1",
+              "completed_native_evaluations": 8
+            },
+            {
+              "run": "postcontact_screen_v1",
+              "completed_native_evaluations": 8
+            }
+          ],
+          "count_definition": "Local proposal = unique full parameter dictionary with at least one completed native rollout. Cold repetitions count as native simulations, not new proposals. Includes candidates rejected by an early timestep screen; excludes the independent seed-reproduction audit."
+        }
+      },
+      "validation_report": "D:\\Exercise_mechanics\\deliverables\\jump_rl_study_draft_v5\\qualified_final_validation.json",
+      "render_source_id": "robust_postlanding_v1_worker_01_episode_000002",
+      "checked_distance_m": 3.0089738484319533
+    }
+  },
+  "completed_v3_PPO_trials": 9258,
+  "count_definition": "Completed PPO rollouts in landing_stability_v3, including failures. Worker-local episode numbers, fine-step verification, CEM and recenter replays are excluded.",
+  "inherited_prior_protocol_training_episodes": 528
+}

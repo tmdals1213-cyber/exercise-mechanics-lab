@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Jump / Box Jump / Squat · Power baseline</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0d1726;color:#edf3fb;font:16px/1.55 system-ui}
+main{max-width:1460px;padding:28px;margin:auto;display:grid;grid-template-columns:minmax(280px,460px) minmax(0,1fr);gap:36px}
+h1{line-height:1.1;font-size:clamp(28px,3.1vw,45px);margin:14px 0}h2{font-size:22px;margin:28px 0 10px}
+p,li{color:#a6bcd1}a{color:#8ce2d5}video,img{display:block;width:100%}video{background:#0d1726;border-radius:12px}
+.eyebrow{letter-spacing:.13em;font-size:12px;color:#8ce2d5}.status{border-left:3px solid #efb45b;padding:6px 15px}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:25px 0}.metric{border-top:1px solid #41576c;padding-top:12px}
+.metric strong{font-size:30px;display:block}.metric small{color:#a6bcd1}.scroll{overflow:auto}table{width:100%;border-collapse:collapse;font-size:14px}
+td,th{text-align:left;padding:12px 10px;border-bottom:1px solid #34495e;white-space:nowrap}th{font-weight:500;color:#a6bcd1}
+.cases{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.case{padding:15px;background:#142338;border:1px solid #34495e;border-radius:8px}
+.case small{display:block;color:#a6bcd1;margin-top:5px}.formula{font-size:24px;color:#edf3fb}details{margin:25px 0}summary{cursor:pointer}
+.links{display:flex;flex-wrap:wrap;gap:10px 18px}.figure{margin-top:25px}footer{margin-top:25px;color:#a6bcd1;font-size:13px}
+@media(max-width:900px){main{display:flex;flex-direction:column;padding:16px;gap:20px}.media{max-width:460px;margin:auto}.metric strong{font-size:25px}}
+</style>
+<main>
+<section class="media"><video id="replay" controls playsinline preload="metadata" poster="poster.png" src="cmj_power_realtime.mp4" aria-label="Measured countermovement jump, three real-time replays with COM power"></video><p>1× speed · 3 replays of one measured jump.<br>Front oblique + posterior · 1080 × 1920.</p><div class="links"><a href="cmj_power_realtime.mp4">Open portrait video</a><a href="../measured_jump_visualization/index.html">Muscle / joint explorer</a></div></section>
+<section>
+<div class="eyebrow">JUMP / BOX JUMP / BACK SQUAT</div>
+<h1>Power, on the actual clock.</h1>
+<p>180 cm / 88 kg male · measured countermovement jump, hands on hips. Each future comparison keeps its own physical tempo and repeats independently.</p>
+<p class="status"><strong>CMJ baseline audited.</strong> Box 40 / 60 / 80 cm and squat 60 / 100 / 140 kg are the selected next conditions. Their trajectories and outputs have not yet been solved.</p>
+<div class="metrics"><div class="metric"><strong>3.35–3.48</strong><small>Peak COM power [kW]</small></div><div class="metric"><strong>0.284–0.316</strong><small>Propulsion time [s]</small></div><div class="metric"><strong>5.7–6.6%</strong><small>Peak difference between velocity methods</small></div></div>
+<h2>One definition across movements</h2>
+<p class="formula">P<sub>COM,z</sub>(t) = F<sub>ground,z</sub>(t) × v<sub>system COM,z</sub>(t)</p>
+<p>For a squat, the system includes both the body and the bar. Bar-only power is a separate measurement. This COM translation metric excludes motion and rotation of segments relative to the COM, muscle/tendon power and metabolic power.</p>
+<div class="scroll"><table><thead><tr><th>Measured repetition</th><th>Peak [kW]</th><th>Propulsion mean [kW]</th><th>Propulsion [s]</th><th>COM work [J]</th><th>Method gap</th></tr></thead><tbody><!--TRIAL_ROWS--></tbody></table></div>
+<p>Means and work cover lowest COM through takeoff. Flight, landing and display replays are excluded. Method gap compares marker-derived COM velocity with force-integrated velocity anchored at the same bottom event.</p>
+<img class="figure" src="power_baseline.png" alt="Actual-time power, ground force and COM velocity for three measured jumps, plus two velocity-method peak comparison">
+<h2>Comparison conditions</h2>
+<div class="cases"><div class="case">BOX JUMP · 40 / 60 / 80 cm<small>Track COM rise, foot clearance and landing posture separately. Box height alone does not specify takeoff output.</small></div><div class="case">HIGH-BAR SQUAT · 60 / 100 / 140 kg<small>Preserve realistic ascent, descent and pauses. No equal-duration scaling or strength ceiling.</small></div></div>
+<p>Maximal-intent box-jump experiments have found similar takeoff power across different box heights. This does not establish the output of a particular person or an 80 cm box. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11166134/">Height study</a> · <a href="https://pubmed.ncbi.nlm.nih.gov/32187147/">Low / high box study</a>.</p>
+<details><summary>Checks and limits</summary><ul>
+<li>Seven analytic checks passed: static support, constant speed, accelerating mass energy, ballistic energy, noncoincident peaks, combined body/bar COM and threshold-duration interpolation.</li>
+<li>Measured COM work differs from vertical COM mechanical-energy change by 3.2–5.3%. Peak power differs by 5.7–6.6% between velocity methods. The methods share data and assumptions; these are consistency checks, not an independently established accuracy bound.</li>
+<li>COM motion is estimated from markers with generic segment mass fractions. The reported mass is 88 kg; quiet force implies about 91.8 kg. No mass or force amplitudes were silently rescaled.</li>
+<li>The power baseline does not depend on a muscle-force sharing solution. Anatomical colours retain the existing conditional tension and joint-reaction estimates; their physiological accuracy is still under review.</li>
+<li>A screened natural-speed squat force dataset lacks an accepted velocity reconstruction here. Unvalidated integrated power values are excluded.</li>
+<li>Replays end before landing. An end hold separates them without slowing the movement. Neither repeated displays nor the held frame add physical work.</li>
+</ul></details>
+<div class="links"><a href="summary.json">Power values / provenance</a><a href="comparison_setup.json">Comparison specification</a><a href="video_checks.json">Playback checks</a><a href="s10_CMJ_t1_power.csv">Trial 1 CSV</a><a href="s10_CMJ_t2_power.csv">Trial 2 CSV</a><a href="s10_CMJ_t3_power.csv">Trial 3 CSV</a><a href="CREDITS.md">Anatomical credits</a></div>
+<footer>Measured data: <a href="https://doi.org/10.6084/m9.figshare.28890545">Calisti, Mohr &amp; Federolf · CC BY 4.0</a> · <a href="https://doi.org/10.1038/s41597-025-05934-5">Dataset paper</a>. Three real repetitions contribute to the table; the video replays Trial 1 three times.</footer>
+</section></main></html>

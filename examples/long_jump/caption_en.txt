@@ -1,0 +1,4 @@
+Can AI learn a better standing long jump?
+Same virtual torque limits. 9,258 PPO trials + 80 local proposals.
+3.01 m with stable landing across four time steps.
+A model experiment, not a measured human performance.

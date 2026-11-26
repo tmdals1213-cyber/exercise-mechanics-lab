@@ -1,0 +1,19 @@
+{
+  "repository": "https://github.com/ComputationalBiomechanicsLab/rmr-solver",
+  "tag": "v1.1",
+  "tree_sha": "b47b06cd23c872e69f92687270e47d4c560bb14b",
+  "candidates": [
+    {
+      "path": "OpenSim Models/for RMR solver/TSM_subject_noWeight.osim",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3f6111acafc57a4b63d44687d36b40c709a36996",
+      "size": 339669,
+      "url": "https://api.github.com/repos/ComputationalBiomechanicsLab/rmr-solver/git/blobs/3f6111acafc57a4b63d44687d36b40c709a36996"
+    }
+  ],
+  "local_model_sha256": "c357e61eb266558c0bfe9212462fbc1d621e0398c2eafc4e1a4aa92fe5c7a9ff",
+  "matching_blobs": [
+    "OpenSim Models/for RMR solver/TSM_subject_noWeight.osim"
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "updated_date": "2026-11-23",
+  "workflow": "reference_motion_first",
+  "status": "superseded_by_physics_first_task_generation",
+  "subject": {
+    "height_m": 1.78,
+    "mass_kg": 87.0,
+    "anatomy": "generic"
+  },
+  "reference": {
+    "provider": "Catalyst Athletics",
+    "source_page": "https://www.catalystathletics.com/exercise/548/Box-Jump/",
+    "video": "https://www.youtube.com/watch?v=d2z2_rRkpAo",
+    "tracked_video_interval_s": [
+      9,
+      17
+    ],
+    "native_replay_interval_s": [
+      11.5,
+      14.1
+    ],
+    "tracking_folder": "results/reference_box_jump/catalyst_tracking",
+    "native_replay_folder": "results/reference_box_jump/temporal_image_fit",
+    "data_kind": "single_video_pose_estimate_not_marker_based_mocap",
+    "physical_playback_rate_verified": false,
+    "camera_calibrated": false,
+    "box_height_m_measured": null
+  },
+  "stages": [
+    {
+      "stage": "reference_kinematics",
+      "description": "Track actual trunk, pelvis, shoulder/elbow/wrist, hip/knee/ankle/heel/toe positions, timing and contact events."
+    },
+    {
+      "stage": "native_model_IK",
+      "description": "Fit reference directions and projections using fixed native segment lengths; report occlusion, joint limits and retarget residuals."
+    },
+    {
+      "stage": "motion_review",
+      "description": "Review preparation, extension, arm swing, tuck, bilateral box arrival and settling before force colours or muscle-force comparisons."
+    },
+    {
+      "stage": "dynamic_consistency",
+      "description": "Apply gravity, support/contact, friction, ballistic COM and angular-momentum checks with bounded corrections to the observed motion. Report reference deviation."
+    },
+    {
+      "stage": "inverse_dynamics",
+      "description": "Calculate joint demands from accepted motion, body inertias and measured or explicitly estimated external forces."
+    },
+    {
+      "stage": "conditional_muscle_tensions",
+      "description": "Solve the muscle-sharing problem only after motion and external-mechanics review."
+    }
+  ],
+  "correction_policy": {
+    "change_motion_arbitrarily_to_pass_equilibrium": false,
+    "hidden_root_force_or_torque_allowed": false,
+    "force_clipping": false,
+    "strength_ceiling": false,
+    "reference_deviation_report_required": true,
+    "camera_timing_and_scale_uncertainty_required": true,
+    "maximum_reference_correction": "To be set from tracking/calibration uncertainty before quantitative dynamics."
+  },
+  "release_gates": {
+    "visual_motion_reproduction_reviewed": false,
+    "physical_time_verified": false,
+    "metric_camera_or_motion_calibration_verified": false,
+    "contact_phases_reviewed": false,
+    "reference_deviation_acceptable": false,
+    "dynamic_consistency_passed": false,
+    "human_muscle_force_validated": false
+  },
+  "force_analysis_allowed": false,
+  "reported_160cm_case": {
+    "status": "later_extension_after_reference_motion_replay",
+    "box_height_is_not_COM_rise": true
+  },
+  "synthetic_trials": {
+    "folder": "results/power_comparison/yun_sungbin",
+    "use": "numerical diagnostics only",
+    "human_motion_validated": false,
+    "use_as_reference_motion": false
+  },
+  "documentation": [
+    {
+      "title": "OpenSim inverse dynamics",
+      "url": "https://opensimconfluence.atlassian.net/wiki/spaces/OpenSim/pages/53090063/Getting+Started+with+Inverse+Dynamics"
+    },
+    {
+      "title": "OpenSim residual reduction",
+      "url": "https://opensimconfluence.atlassian.net/wiki/spaces/OpenSim/pages/53089688"
+    }
+  ],
+  "previous_native_replay_review": "Rejected by user: unnatural trajectory tracking",
+  "active_candidate": {
+    "source": "https://www.youtube.com/watch?v=ngyj9rSEjLc&t=155s",
+    "tracking": "results/reference_box_jump/yun_user_video/rtmpose_full_body/motion_observations.npz",
+    "native_replay": "results/reference_box_jump/yun_rtmpose_native_fit",
+    "configuration": "scenarios/yun_box_rtmpose_kinematic_reference.json",
+    "video": "deliverables/yun_reference_motion_review/box_jump_motion_replay.mp4"
+  },
+  "physiology_in_scope": false,
+  "priority_protocol": "scenarios/physical_motion_tasks.json",
+  "reference_video_role": "advisory"
+}

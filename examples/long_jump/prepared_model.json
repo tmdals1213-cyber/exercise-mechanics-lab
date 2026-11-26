@@ -1,0 +1,212 @@
+{
+  "model_sha256": "9e10ca9aa41ef0a255a40f13ee153cb0139de1c8ef8d10167b978bc87a126c6c",
+  "compressed_sha256": "64ed0a59c5f5b1cdc38b9edda9c7581753cfd67a23ff87019860b72905c95c63",
+  "mujoco_version": "3.17.0",
+  "joint_names": [
+    "flex_extension",
+    "shoulder_elv_r",
+    "elbow_flexion_r",
+    "shoulder_elv_l",
+    "elbow_flexion_l",
+    "hip_flexion_r",
+    "knee_angle_r",
+    "ankle_angle_r",
+    "hip_flexion_l",
+    "knee_angle_l",
+    "ankle_angle_l"
+  ],
+  "contact_points": [
+    {
+      "body": 95,
+      "local": [
+        -0.01004378230818453,
+        -0.07469789997596309,
+        0.036825371124365576
+      ],
+      "initial_world": [
+        -0.1453487466025335,
+        0.22323313912271653,
+        0.0
+      ],
+      "forefoot": false
+    },
+    {
+      "body": 95,
+      "local": [
+        -0.009985109821972989,
+        -0.07469788852478643,
+        -0.03684132568045721
+      ],
+      "initial_world": [
+        -0.07168202643260563,
+        0.22323313912271653,
+        0.0
+      ],
+      "forefoot": false
+    },
+    {
+      "body": 96,
+      "local": [
+        -8.661149289459934e-05,
+        -0.07285658133826023,
+        0.03589993111869987
+      ],
+      "initial_world": [
+        -0.1453487466025335,
+        0.03528112522849969,
+        0.0
+      ],
+      "forefoot": true
+    },
+    {
+      "body": 96,
+      "local": [
+        -2.7939006683049775e-05,
+        -0.07285656988713334,
+        -0.037766765686122916
+      ],
+      "initial_world": [
+        -0.07168202643260563,
+        0.03528112522849969,
+        0.0
+      ],
+      "forefoot": true
+    },
+    {
+      "body": 96,
+      "local": [
+        0.06581286853667777,
+        -0.072909059795877,
+        0.035952417328889125
+      ],
+      "initial_world": [
+        -0.1453487466025335,
+        -0.030618396597980824,
+        0.0
+      ],
+      "forefoot": true
+    },
+    {
+      "body": 96,
+      "local": [
+        0.06587154102288931,
+        -0.07290904834475012,
+        -0.037714279475933664
+      ],
+      "initial_world": [
+        -0.07168202643260563,
+        -0.030618396597980824,
+        0.0
+      ],
+      "forefoot": true
+    },
+    {
+      "body": 101,
+      "local": [
+        -0.010043772515952112,
+        -0.0746977825872807,
+        0.03682537614152355
+      ],
+      "initial_world": [
+        0.021724811572602656,
+        0.22336618425891253,
+        0.0
+      ],
+      "forefoot": false
+    },
+    {
+      "body": 101,
+      "local": [
+        -0.009985119449667934,
+        -0.07469779404696347,
+        -0.03684132067876384
+      ],
+      "initial_world": [
+        0.09539153174253051,
+        0.22336618425891253,
+        0.0
+      ],
+      "forefoot": false
+    },
+    {
+      "body": 102,
+      "local": [
+        -8.831392867857632e-05,
+        -0.07285646254906254,
+        0.038050157103340844
+      ],
+      "initial_world": [
+        0.021724811572602656,
+        0.03541588263324627,
+        0.0
+      ],
+      "forefoot": true
+    },
+    {
+      "body": 102,
+      "local": [
+        -2.9660862394399555e-05,
+        -0.07285647400869544,
+        -0.035616539716946546
+      ],
+      "initial_world": [
+        0.09539153174253051,
+        0.03541588263324627,
+        0.0
+      ],
+      "forefoot": true
+    },
+    {
+      "body": 102,
+      "local": [
+        0.06581287838219013,
+        -0.07290894235724903,
+        0.03810262732080756
+      ],
+      "initial_world": [
+        0.021724811572602656,
+        -0.030485351461784826,
+        0.0
+      ],
+      "forefoot": true
+    },
+    {
+      "body": 102,
+      "local": [
+        0.06587153144847431,
+        -0.07290895381688191,
+        -0.03556406949947983
+      ],
+      "initial_world": [
+        0.09539153174253051,
+        -0.030485351461784826,
+        0.0
+      ],
+      "forefoot": true
+    }
+  ],
+  "registration": {
+    "position_registration_error_m": 4.40619762898109e-16,
+    "mass_kg": 87.0,
+    "source_body_inertias_preserved": true,
+    "numerical_joint_armature_kg_m2": 0.01,
+    "rigid_foot": true,
+    "toe_joint_control": false,
+    "free_root_in_sagittal_plane": true,
+    "lateral_motion_constrained": true,
+    "sagittal_axes": true,
+    "articular_helper_motion_frozen": true
+  },
+  "scope": "Registered reduced rigid body and contacts; no anatomical surface mesh or muscle-path force sharing is represented by its shape.",
+  "source_id": "robust_postlanding_v1_worker_01_episode_000002",
+  "source_dt_s": 0.00025,
+  "expected_retained_m": 3.0089738484319533,
+  "checked_min_retained_m": 3.0089738484319533,
+  "checked_timesteps_s": [
+    6.25e-05,
+    0.000125,
+    0.00025,
+    0.0005
+  ],
+  "input_is_not_a_prescribed_COM_path": true
+}

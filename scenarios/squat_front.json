@@ -1,0 +1,82 @@
+{
+  "movement": "squat",
+  "status": "specification_only_not_simulated",
+  "common": {
+    "subject": {
+      "sex": "male",
+      "height_m": 1.8,
+      "mass_kg": 90.0
+    },
+    "bar_mass_kg": 100.0,
+    "bar_diameter_m": 0.028,
+    "stance": {
+      "ankle_centre_width_m": 0.36,
+      "toe_out_deg": 15.0,
+      "heel_elevation_m": 0.0,
+      "status": "candidate; verify foot geometry and feasible joint ranges"
+    },
+    "depth": {
+      "criterion": "hip-to-knee segment horizontal at bottom",
+      "target_angle_deg": 0.0,
+      "tolerance_deg": 1.0,
+      "competition_depth_claim": false
+    },
+    "timing": {
+      "descent_s": 2.0,
+      "bottom_hold_s": 0.3,
+      "ascent_s": 2.0,
+      "top_hold_s": 0.3
+    },
+    "strength_ceiling_enforced": false,
+    "head_pose": "neutral relative to trunk; clearance to be checked",
+    "joint_classification": "hip flexion is independent; anatomical knee couplers retained",
+    "matching": [
+      "anthropometry",
+      "bar mass",
+      "stance and footwear",
+      "depth definition",
+      "phase timing",
+      "camera and force scales"
+    ],
+    "solved_not_prescribed": [
+      "trunk inclination",
+      "hip/knee/ankle strategy",
+      "actual bar-surface contact points",
+      "support-force distribution"
+    ]
+  },
+  "variant": {
+    "id": "front",
+    "label": "FRONT SQUAT",
+    "bar_support_region": "anterior deltoid and clavicular shelf",
+    "arm_rack": "front rack; elbows forward and raised"
+  },
+  "presentation": {
+    "language": "en",
+    "canvas": [
+      1080,
+      1920
+    ],
+    "fps": 30,
+    "bottom_reserved_px": 384,
+    "title": "SQUAT / BAR POSITION",
+    "question": "How does bar position change a squat?",
+    "main_view": "front oblique; full body",
+    "comparison_view": "matched side views for bar position and trunk inclination",
+    "intro_format": "one full cycle per variant, followed by one synchronized four-way cycle",
+    "intro_duration_target_s": 25.0,
+    "detailed_muscle_analysis": "follow-up episode",
+    "muscle_color_policy": "computed tension only after validated contact/trajectory dynamics; no manually assigned dominance colors",
+    "first_metrics": [
+      "bar support position and path",
+      "trunk inclination",
+      "phase-matched posture comparison"
+    ],
+    "later_metrics": [
+      "hip/knee/ankle net joint moments",
+      "active/passive muscle tension",
+      "joint transmitted resultants",
+      "anthropometry sensitivity"
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "updated_on": "2026-11-23",
+  "priority": ["rigid_body_and_contact_mechanics", "plausible_task_coordination", "mechanical_load_analysis", "reference_video_similarity"],
+  "user_scope": "Physical realism is the criterion. Videos inform a motion style; they are not trajectories that must be reproduced exactly. No physiological activation, fatigue or injury prediction.",
+  "motion_inputs": ["body_geometry_and_inertias", "joint_task_and_timing", "foot_support_and_friction", "simple_arm_swing", "internal_flight_coordination"],
+  "computed_outputs": ["ground_reactions", "COP", "takeoff_velocity", "whole_body_COM_trajectory", "whole_body_angular_momentum", "attainable_foot_clearance", "conditional_joint_and_muscle_loads_after_checks"],
+  "hard_conditions": ["floating_root_equations", "unilateral_contacts", "friction_cone", "sticking_contact_kinematics", "free_flight_gravity", "free_flight_momentum_conservation", "joint_ranges", "task_appropriate_limb_order", "collision_free_body_and_platform_motion"],
+  "validation_separation": "Equation consistency, task completion and realistic human coordination are separate acceptance criteria. Passing one never implies the others.",
+  "not_permitted": ["hidden_root_force_or_torque", "airborne_horizontal_propulsion", "force_clipping", "strength_ceiling", "moving_the_body_to_a_box_target_after_solving"],
+  "current_task": {
+    "builder": "scripts/build_physical_jump_task.py",
+    "body_height_m": 1.78,
+    "body_mass_kg": 87,
+    "arm_motion": "One sagittal swing; fixed humeral axial rotation and neutral wrist/fingers.",
+    "leg_motion": "For the bilateral sagittal task, hold planted-pose hip axial rotation/adduction and subtalar orientation. These task restrictions do not impose strength ceilings.",
+    "ground": "Joint and COM objectives are soft; reaction feasibility is imposed while generating motion.",
+    "flight": "COM and angular momentum inherit the launch state; only internal coordination changes.",
+    "landing": "Impact and supported settling require a separate contact solve and remain pending.",
+    "athlete_maximum_performance_claim": false
+  }
+}
